@@ -1,0 +1,55 @@
+# === Arduino / Wokwi ===
+*.elf
+*.hex
+*.bin
+*.o
+.pio
+.vscode/
+*.d
+
+# === Python (AI) ===
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+env/
+.env
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ipynb_checkpoints/
+
+# === Node (Frontend - for later) ===
+node_modules/
+dist/
+build/
+.next/
+.nuxt/
+.env.local
+.env.*.local
+
+# === KiCad ===
+*-backups/
+*.kicad_prl
+fp-info-cache
+*.zip
+*.step
+*.wrl
+~*
+
+# === OS & Editors ===
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+.idea/
+*.sublime-workspace
+
+# === Secrets & Local ===
+.env
+.env.*
+!.env.example
+secrets/
+*.pem
+credentials.json
