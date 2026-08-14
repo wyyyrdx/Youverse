@@ -1,0 +1,94 @@
+{
+  "version": 1,
+  "author": "firmware engineer",
+  "editor": "wokwi",
+  "parts": [
+    {
+      "type": "wokwi-arduino-uno",
+      "id": "uno",
+      "top": 0,
+      "left": 0,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-photoresistor-sensor",
+      "id": "photoresistor_sensor_1786733347718_i96mcyny3",
+      "top": -146,
+      "left": -165,
+      "attrs": {
+        "ledDO": false,
+        "ledPower": false,
+        "lux": 500
+      }
+    },
+    {
+      "type": "wokwi-dht22",
+      "id": "dht22_1786733368156_jkm0jja1z",
+      "top": -201,
+      "left": 161,
+      "attrs": {
+        "temperature": 25,
+        "humidity": 50
+      }
+    },
+    {
+      "type": "wokwi-pir-motion-sensor",
+      "id": "pir_motion_sensor_1786733388051_gqnz253kc",
+      "top": 266,
+      "left": -175,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-potentiometer",
+      "id": "potentiometer_1786733403039_vske0n5ba",
+      "top": 321,
+      "left": 138,
+      "attrs": {
+        "min": 0,
+        "max": 1023,
+        "value": 0,
+        "step": 1,
+        "startDegree": -135,
+        "endDegree": 135
+      }
+    }
+  ],
+  "connections": [
+    [
+      "dht22_1786733368156_jkm0jja1z:GND",
+      "esp32:GND2",
+      "black",
+      []
+    ],
+    [
+      "dht22_1786733368156_jkm0jja1z:VCC",
+      "esp32:3V3",
+      "#cc0000",
+      []
+    ],
+    [
+      "photoresistor_sensor_1786733347718_i96mcyny3:VCC",
+      "esp32:3V3",
+      "#8B00FF",
+      []
+    ],
+    [
+      "photoresistor_sensor_1786733347718_i96mcyny3:GND",
+      "esp32:GND",
+      "#8B4513",
+      []
+    ],
+    [
+      "pir_motion_sensor_1786733388051_gqnz253kc:VCC",
+      "esp32:3V3",
+      "#32CD32",
+      []
+    ],
+    [
+      "potentiometer_1786733403039_vske0n5ba:VCC",
+      "esp32:3V3",
+      "#0000cc",
+      []
+    ]
+  ]
+}
