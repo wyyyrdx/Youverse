@@ -21,12 +21,14 @@ def generate_reading(device_id: str, timestamp: datetime, profile: str = "focuse
     useful for sanity-checking that your scoring model responds sensibly.
     Options: "focused", "active", "burned_out", "creative", "idle"
     """
+    # Ranges per Waad's confirmed Sensor Data Contract:
+    # light 0-100, temperature 10-45C, humidity 10-95%, noise 0-100, motion is 0/1 only.
     profiles = {
-        "focused":    dict(light=(400, 600), temp=(20, 23), hum=(35, 45), motion=(0, 1), noise=(20, 35)),
-        "active":     dict(light=(300, 800), temp=(21, 26), hum=(40, 55), motion=(1, 5), noise=(35, 60)),
-        "burned_out": dict(light=(100, 250), temp=(23, 27), hum=(45, 60), motion=(0, 1), noise=(15, 30)),
-        "creative":   dict(light=(350, 550), temp=(20, 24), hum=(38, 48), motion=(0, 3), noise=(30, 50)),
-        "idle":       dict(light=(50, 150), temp=(19, 22), hum=(30, 40), motion=(0, 0), noise=(10, 20)),
+        "focused":    dict(light=(55, 75), temp=(20, 23), hum=(35, 45), motion_p=0.15, noise=(15, 30)),
+        "active":     dict(light=(40, 90), temp=(21, 27), hum=(40, 55), motion_p=0.70, noise=(30, 55)),
+        "burned_out": dict(light=(10, 30), temp=(24, 30), hum=(45, 65), motion_p=0.10, noise=(10, 25)),
+        "creative":   dict(light=(45, 70), temp=(20, 25), hum=(38, 50), motion_p=0.35, noise=(25, 45)),
+        "idle":       dict(light=(5, 20), temp=(18, 22), hum=(30, 40), motion_p=0.02, noise=(5, 15)),
     }
     p = profiles.get(profile, profiles["focused"])
 
@@ -36,7 +38,7 @@ def generate_reading(device_id: str, timestamp: datetime, profile: str = "focuse
         "light": round(random.uniform(*p["light"]), 1),
         "temperature": round(random.uniform(*p["temp"]), 1),
         "humidity": round(random.uniform(*p["hum"]), 1),
-        "motion": random.randint(*p["motion"]),
+        "motion": 1 if random.random() < p["motion_p"] else 0,  # confirmed: 0 or 1 only
         "noise": round(random.uniform(*p["noise"]), 1),
     }
 
@@ -44,7 +46,7 @@ def generate_reading(device_id: str, timestamp: datetime, profile: str = "focuse
 def generate_window(
     device_id: str = "esp32-sim-001",
     minutes: int = 30,
-    sample_every_seconds: int = 60,
+    sample_every_seconds: int = 5,  # confirmed: firmware samples every 5s
     profile: str = "focused",
     start: datetime | None = None,
 ) -> list[dict]:
@@ -58,6 +60,6 @@ def generate_window(
 
 
 if __name__ == "__main__":
-    window = generate_window(minutes=10, sample_every_seconds=60, profile="active")
+    window = generate_window(minutes=1, profile="active")  # 12 samples at 5s intervals
     for r in window:
         print(r)
