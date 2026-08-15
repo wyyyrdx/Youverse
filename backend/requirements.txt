@@ -11,4 +11,4 @@ supabase==2.5.1
 python-dotenv==1.0.1
 
 # Data validation and serialization using Python type hints
-pydantic==2.6.4
+pydantic==2.18.2
