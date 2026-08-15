@@ -1,14 +1,5 @@
-# Core web framework for building APIs
-fastapi
-
-# ASGI server to run FastAPI app locally and in production
-uvicorn
-
-# Supabase Python client for PostgreSQL database operations
-supabase
-
-# Loads environment variables from .env file
-python-dotenv
-
-# Data validation and serialization using Python type hints
-pydantic
+fastapi>=0.110.0
+uvicorn[standard]>=0.29.0
+supabase>=2.5.1
+python-dotenv>=1.0.1
+pydantic>=2.7.0
