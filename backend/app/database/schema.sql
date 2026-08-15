@@ -32,25 +32,37 @@ CREATE TABLE IF NOT EXISTS sensor_readings (
 CREATE INDEX idx_sensor_readings_device_id ON sensor_readings(device_id);
 CREATE INDEX idx_sensor_readings_timestamp ON sensor_readings(timestamp);
 
--- Behavioral features (processed data)
+-- ============================================================
+-- Table: behavioral_features
+-- ============================================================
+-- Drop old table if it exists (only for initial setup, be careful)
+-- DROP TABLE IF EXISTS behavioral_features;
+
 CREATE TABLE IF NOT EXISTS behavioral_features (
     id BIGSERIAL PRIMARY KEY,
     user_id UUID REFERENCES users(id),
     window_start TIMESTAMPTZ,
     window_end TIMESTAMPTZ,
-    n_samples INT,
+    n_samples INTEGER,
     duration_minutes FLOAT,
-    features JSONB,
+    -- Flexible JSONB container for all behavioral features
+    features JSONB NOT NULL DEFAULT '{}'::jsonb,
     is_simulated BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMPTZ DEFAULT now()
 );
 
--- Predictions (model output)
+-- ============================================================
+-- Table: predictions
+-- ============================================================
+-- Drop old table if it exists (only for initial setup, be careful)
+-- DROP TABLE IF EXISTS predictions;
+
 CREATE TABLE IF NOT EXISTS predictions (
     id BIGSERIAL PRIMARY KEY,
     user_id UUID REFERENCES users(id),
     state_name TEXT NOT NULL,
-    probability FLOAT NOT NULL,  -- percentage 0-100
+    -- Probability is a float between 0.0 and 1.0 (decimal scale)
+    probability FLOAT NOT NULL CHECK (probability >= 0.0 AND probability <= 1.0),
     color TEXT,
     is_simulated BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMPTZ DEFAULT now()
