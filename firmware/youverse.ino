@@ -3,14 +3,22 @@
 #include <time.h>
 #include <HTTPClient.h>
 #include <WiFiClientSecure.h>
+#include <Wire.h>
+#include <Adafruit_GFX.h>
+#include <Adafruit_SSD1306.h>
+
 
 #define LDR_PIN 34
 #define DHT_PIN 4
 #define PIR_PIN 27
 #define NOISE_PIN 35
 #define DHT_TYPE DHT22
+#define SCREEN_WIDTH 128
+#define SCREEN_HEIGHT 64
+#define OLED_RESET -1
 
 DHT dht(DHT_PIN, DHT_TYPE);
+Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 
 const char* ssid = "Wokwi-GUEST";
 const char* password = "";
@@ -103,10 +111,33 @@ void setup () {
   pinMode (PIR_PIN, INPUT);
   dht.begin();
 
+  if (!display.begin(SSD1306_SWITCHCAPVCC, 0x3C)) {
+  Serial.println("OLED init failed");
+} else {
+  display.clearDisplay();
+  display.setTextSize(1);
+  display.setTextColor(SSD1306_WHITE);
+  display.setCursor(0, 0);
+  display.println("Youverse Starting...");
+  display.display();
+}
+
   Serial.println ("Youverse - firmware started");
 
   connectWiFi();
   setupTime();
+}
+
+void updateDisplay(float temp, float hum, float light, int motion, float noise, bool sent) {
+  display.clearDisplay();
+  display.setCursor(0, 0);
+  display.println("YOUVERSE");
+  display.print("Temp: "); display.print(temp, 1); display.println(" C");
+  display.print("Humidity: "); display.print(hum, 1); display.println(" %");
+  display.print("Light: "); display.println(light, 1);
+  display.print("Motion: "); display.println(motion);
+  display.print("Status: "); display.println(sent ? "Sent OK" : "Sending...");
+  display.display();
 }
 
 void loop () {
@@ -143,6 +174,11 @@ void loop () {
 
   Serial.println(payload);
   sendSensorData(payload);
+
+  updateDisplay(temperature, humidity, light, motion, noise, false);
+  sendSensorData(payload);
+  updateDisplay(temperature, humidity, light, motion, noise, true);
+
 
   delay(5000);
 }
