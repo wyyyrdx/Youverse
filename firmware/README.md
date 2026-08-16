@@ -1,46 +1,39 @@
-# Firmware -  Youverse
+# Firmware - YOUVERSE
 
-ESP32 firmware that collects environmental/behavioral signals and outputs them in the agreed Sensor Data Contract format.
+## Overview
+ESP32 firmware that reads sensor data, formats it per the agreed Sensor
+Data Contract, and sends it to the backend via WiFi/HTTP.
 
-## Sensors Used
+## Status
+✅ Sensor reading logic (DHT, LDR, PIR, simulated noise)
+✅ Dynamic ISO 8601 timestamp via NTP
+✅ WiFi connection + HTTP POST with retry logic
+✅ Compiles successfully via arduino-cli (esp32:esp32 core)
+✅ Manually verified backend ingestion via Swagger (201 success)
+⏳ Live Serial verification pending - network/WebSocket connectivity
+issue on current setup, being retested on a different network
 
-| Sensor | Pin | Value Range | Description |
-|---------------------|------|-----------------|---------------------------------|
-| DHT22 | 4 | Temp (°C), Humidity (%) | Temperature & Humidity |
-| LDR (Photoresistor) | 34 | 0 – 100 | Ambient light level |
-| PIR Motion Sensor | 27 | 0 or 1 | Motion detected |
-| Potentiometer | 35 | 0 – 100 | Simulated noise level |
-
-## JSON Output Format
-
-The firmware prints a JSON object every 5 seconds:
-
-```json
+## JSON Payload Format
+\`\`\`json
 {
 "device_id": "esp32-sim-001",
-"timestamp": "2026-08-14T23:00:00Z",
-"light": 68.0,
-"temperature": 25.3,
-"humidity": 47.5,
+"timestamp": "2026-08-16T12:00:00Z",
+"light": 77.7,
+"temperature": 25.0,
+"humidity": 50.0,
 "motion": 1,
-"noise": 32.0
+"noise": 30.0
 }
-```
+\`\`\`
 
-## Current Status
+## Backend Endpoint
+POST https://youverse-stag-3.up.railway.app/api/sensors/ingest
 
-- Running successfully on Wokwi simulator
-- JSON output matches the Backend Sensor Data Contract
-- Values are realistic and changing over time
-- WiFi + HTTP POST will be added once Backend provides a public endpoint
+## Required Libraries
+Install via arduino-cli or Arduino IDE Library Manager:
+- DHT sensor library (Adafruit)
+- Adafruit Unified Sensor
+- ArduinoJson
 
-## Files
-
-- `youverse.ino` → Main firmware code
-- `diagram.json` → Circuit diagram from the simulator
-
-## Notes
-
-- Currently in simulation mode (no real hardware yet)
-- DHT library is required (DHT sensor library + Adafruit Unified Sensor)
-- Timestamp is still static (will be improved next)
+## Sampling
+Every 5 seconds, per Sensor Data Contract.
