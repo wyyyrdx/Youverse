@@ -8,8 +8,7 @@ Reuses the exact same score_features() function as the live pipeline,
 so "changing a behavior visibly changes the distribution" (Day 5
 checkpoint) is guaranteed by construction rather than duplicated logic.
 """
-
-from scoring.score import score_features
+from app.ai.scoring.score import score_features
 
 
 def apply_what_if(base_features: dict, changed_feature: str, new_value: float) -> dict:

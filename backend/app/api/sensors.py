@@ -1,27 +1,44 @@
+"""
+Sensor API routes for Youverse / Superposition You.
+Handles ingestion of sensor data from ESP32 and retrieval of readings.
+"""
+
 from fastapi import APIRouter, HTTPException, status
 from app.schemas.sensor import SensorData
 from app.database.supabase_client import SupabaseClient
-from datetime import datetime
+from datetime import datetime, timezone
 
 router = APIRouter()
 db = SupabaseClient.get_instance()
 
 @router.post("/sensors/ingest", status_code=status.HTTP_201_CREATED)
 async def ingest_sensor_data(data: SensorData):
-    # Prepare payload for database insertion
+    """
+    Receive sensor data from ESP32 / Wokwi and store in Supabase.
+    """
+    # Build payload for database insertion
     payload = {
         "device_id": data.device_id,
         "light": data.light,
         "temperature": data.temperature,
         "humidity": data.humidity,
-        "motion": data.motion,
+        "motion": data.motion,   # Already validated and converted to int by Pydantic
         "noise": data.noise,
-        "timestamp": data.timestamp.isoformat() if data.timestamp else datetime.utcnow().isoformat(),
-        "is_simulated": False   # default; can be set from headers later
+        # timestamp is now a string; use directly or fallback to current UTC
+        "timestamp": data.timestamp or datetime.now(timezone.utc).isoformat(),
+        "is_simulated": False    # default for real hardware; can be changed later
     }
 
     try:
         result = db.insert_sensor_reading(payload)
+        # If the insert function returned an error dict, raise HTTP 500
+        if result.get("error"):
+            raise HTTPException(
+                status_code=500,
+                detail=f"Database insert failed: {result['error']}"
+            )
+    except HTTPException:
+        raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
 
@@ -37,9 +54,8 @@ async def get_latest_reading(device_id: str = None):
     Fetch the most recent sensor reading from Supabase.
     Optional filter: device_id
     """
-    client = db.client   # Access the Supabase client instance
+    client = db.client
     if client is None:
-        # Fallback for no-DB mode (when credentials missing)
         return {
             "status": "error",
             "message": "Database not configured",
@@ -47,13 +63,11 @@ async def get_latest_reading(device_id: str = None):
         }
 
     try:
-        # Build query: select all, order by timestamp desc, limit 1
         query = client.table("sensor_readings") \
             .select("*") \
             .order("timestamp", desc=True) \
             .limit(1)
 
-        # Apply device filter if provided
         if device_id:
             query = query.eq("device_id", device_id)
 

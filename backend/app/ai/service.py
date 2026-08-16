@@ -1,8 +1,22 @@
+"""
+Integration layer for the backend.
 
+Rana imports these two functions directly from FastAPI route handlers.
+Each function takes raw inputs (sensor readings, or an existing feature
+vector) and returns everything needed to both respond to the API call
+AND insert the right row into the right table — so the backend doesn't
+need to know anything about how features/scoring/what-if work internally.
+
+Matches what was agreed in the AI Contract + API Contract:
+- behavioral_features.features is a JSONB column -> features dict goes in as-is
+- predictions.probability is 0-100 (a percentage) -> score values go in as-is, no conversion
+- what_if_scenarios.parameters / .result are JSONB -> dicts go in as-is
+"""
 
 from app.ai.features.extract import extract_features
 from app.ai.scoring.score import score_features
 from app.ai.what_if.whatif import apply_what_if, apply_what_if_multi
+
 
 def process_window(readings: list[dict], user_id: str) -> dict:
     """
@@ -86,7 +100,7 @@ def process_what_if_multi(stored_features: dict, changes: list[dict], user_id: s
 
 
 if __name__ == "__main__":
-    from data.synthetic import generate_window
+    from app.ai.data.synthetic import generate_window
 
     window = generate_window(minutes=5, profile="active")
     result = process_window(window, user_id="demo-user")
