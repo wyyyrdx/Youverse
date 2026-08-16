@@ -1,0 +1,28 @@
+{
+  "version": 1,
+  "author": "waad - hardware engineer",
+  "editor": "wokwi",
+  "parts": [
+    { "type": "wokwi-esp32-devkit-v1", "id": "esp", "top": -24.1, "left": 23.8, "attrs": {} },
+    { "type": "wokwi-photoresistor-sensor", "id": "ldr1", "top": -80, "left": -180, "attrs": {} },
+    { "type": "wokwi-dht22", "id": "dht1", "top": -80, "left": 220, "attrs": {} },
+    { "type": "wokwi-pir-motion-sensor", "id": "pir1", "top": 180, "left": -120, "attrs": {} },
+    {
+      "type": "wokwi-potentiometer", "id": "pot1", "top": 180, "left": 220, "attrs": { "value": "50" } }
+  ],
+  "connections": [
+    [ "esp:34", "ldr1:AO", "green", [ "h0" ] ],
+    [ "esp:4", "dht1:SDA", "yellow", [ "h0" ] ],
+    [ "esp:GND.3", "pir1:GND", "black", [ "h0" ] ],
+    [ "esp:27", "pir1:OUT", "orange", [ "h0" ] ],
+    [ "esp:GND.4", "pot1:GND", "black", [ "h0" ] ],
+    [ "esp:35", "pot1:SIG", "purple", [ "h0" ] ],
+    [ "dht1:GND", "esp:GND.1", "black", [ "v0" ] ],
+    [ "dht1:VCC", "esp:3V3", "red", [ "v0" ] ],
+    [ "pot1:VCC", "esp:3V3", "blue", [ "v10.7", "h-125", "v-124.8" ] ],
+    [ "pir1:VCC", "esp:3V3", "green", [ "v6.4", "h227.82", "v-144" ] ],
+    [ "ldr1:GND", "esp:GND.2", "#8f4814", [ "h17.6", "v178.8" ] ],
+    [ "ldr1:VCC", "esp:3V3", "purple", [ "h161.6", "v198.4" ] ]
+  ],
+  "dependencies": {}
+}
