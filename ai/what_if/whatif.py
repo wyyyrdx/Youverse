@@ -18,15 +18,29 @@ def apply_what_if(base_features: dict, changed_feature: str, new_value: float) -
                     scenario being modified.
     Returns the modified feature vector alongside the new distribution.
     """
-    if changed_feature not in base_features:
-        raise ValueError(f"Unknown feature '{changed_feature}'. Known: {list(base_features.keys())}")
+    return apply_what_if_multi(base_features, [{"changed_feature": changed_feature, "new_value": new_value}])
+
+
+def apply_what_if_multi(base_features: dict, changes: list[dict]) -> dict:
+    """
+    Apply several feature changes at once, then rescore.
+
+    changes: [{ "changed_feature": str, "new_value": float }, ...]
+    Returns the same shape as apply_what_if(), plus a `changes` list
+    echoing back what was applied.
+    """
+    if not changes:
+        raise ValueError("apply_what_if_multi: changes list is empty")
 
     modified = dict(base_features)
-    modified[changed_feature] = new_value
+    for change in changes:
+        feature_name = change["changed_feature"]
+        if feature_name not in modified:
+            raise ValueError(f"Unknown feature '{feature_name}'. Known: {list(modified.keys())}")
+        modified[feature_name] = change["new_value"]
 
     return {
-        "changed_feature": changed_feature,
-        "new_value": new_value,
+        "changes": changes,
         "modified_features": modified,
         "new_distribution": score_features(modified),
     }
