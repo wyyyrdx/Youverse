@@ -1,6 +1,9 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.api import sensors  # import the sensors router
+
+# Import routers directly from their respective module files
+from app.api.sensors import router as sensors_router
+from app.api.predictions import router as predictions_router
 
 # Create the main FastAPI app
 app = FastAPI(
@@ -28,5 +31,6 @@ def root():
 def health_check():
     return {"status": "healthy"}
 
-# Include the sensors router under /api prefix
-app.include_router(sensors.router, prefix="/api", tags=["sensors"])
+# Include the routers under /api prefix
+app.include_router(sensors_router, prefix="/api", tags=["sensors"])
+app.include_router(predictions_router, prefix="/api", tags=["predictions"])
