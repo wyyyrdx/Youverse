@@ -41,7 +41,7 @@ def process_window(readings: list[dict], user_id: str) -> dict:
             "features": features,  # JSONB column, store as-is
         },
         "predictions_records": [
-            {"user_id": user_id, "state_name": p["future_state"], "probability": p["score"]}
+            {"user_id": user_id, "state_name": p["future_state"], "probability": round(p["score"] / 100, 4)}
             for p in distribution
         ],
         "api_response": {
