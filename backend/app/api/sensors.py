@@ -24,7 +24,7 @@ async def ingest_sensor_data(data: SensorData):
         "humidity": data.humidity,
         "motion": data.motion,   # Already validated and converted to int by Pydantic
         "noise": data.noise,
-        # timestamp is now a string, use directly or fallback to current UTC
+        # timestamp is now a string; use directly or fallback to current UTC
         "timestamp": data.timestamp or datetime.now(timezone.utc).isoformat(),
         "is_simulated": False    # default for real hardware; can be changed later
     }
