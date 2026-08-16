@@ -1,4 +1,4 @@
--- Users
+-- Users table
 CREATE TABLE IF NOT EXISTS users (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     username TEXT,
@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS users (
     created_at TIMESTAMPTZ DEFAULT now()
 );
 
--- Devices
+-- Devices table
 CREATE TABLE IF NOT EXISTS devices (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     device_id TEXT UNIQUE NOT NULL,
@@ -22,36 +22,49 @@ CREATE TABLE IF NOT EXISTS sensor_readings (
     light FLOAT,
     temperature FLOAT,
     humidity FLOAT,
-    motion BOOLEAN,
+    motion INT,  -- 0 or 1
     noise FLOAT,
-    timestamp TIMESTAMPTZ DEFAULT now(),
+    timestamp TIMESTAMPTZ,
+    is_simulated BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMPTZ DEFAULT now()
 );
 
 CREATE INDEX idx_sensor_readings_device_id ON sensor_readings(device_id);
 CREATE INDEX idx_sensor_readings_timestamp ON sensor_readings(timestamp);
 
--- Behavioral features (processed)
+-- ============================================================
+-- Table: behavioral_features
+-- ============================================================
+-- Drop old table if it exists (only for initial setup, be careful)
+-- DROP TABLE IF EXISTS behavioral_features;
+
 CREATE TABLE IF NOT EXISTS behavioral_features (
     id BIGSERIAL PRIMARY KEY,
     user_id UUID REFERENCES users(id),
     window_start TIMESTAMPTZ,
     window_end TIMESTAMPTZ,
-    feature_1 FLOAT,
-    feature_2 FLOAT,
-    feature_3 FLOAT,
-    feature_4 FLOAT,
-    feature_5 FLOAT,
+    n_samples INTEGER,
+    duration_minutes FLOAT,
+    -- Flexible JSONB container for all behavioral features
+    features JSONB NOT NULL DEFAULT '{}'::jsonb,
+    is_simulated BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMPTZ DEFAULT now()
 );
 
--- Predictions
+-- ============================================================
+-- Table: predictions
+-- ============================================================
+-- Drop old table if it exists (only for initial setup, be careful)
+-- DROP TABLE IF EXISTS predictions;
+
 CREATE TABLE IF NOT EXISTS predictions (
     id BIGSERIAL PRIMARY KEY,
     user_id UUID REFERENCES users(id),
     state_name TEXT NOT NULL,
-    probability FLOAT NOT NULL,
+    -- Probability is a float between 0.0 and 1.0 (decimal scale)
+    probability FLOAT NOT NULL CHECK (probability >= 0.0 AND probability <= 1.0),
     color TEXT,
+    is_simulated BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMPTZ DEFAULT now()
 );
 
@@ -62,6 +75,7 @@ CREATE TABLE IF NOT EXISTS what_if_scenarios (
     scenario_type TEXT NOT NULL,
     parameters JSONB,
     result JSONB,
+    is_simulated BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMPTZ DEFAULT now()
 );
 
