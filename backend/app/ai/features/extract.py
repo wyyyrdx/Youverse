@@ -61,7 +61,6 @@ def extract_features(readings: list[dict], user_id: str = "user-1") -> dict:
         },
     }
 
-
 if __name__ == "__main__":
     from data.synthetic import generate_window
 

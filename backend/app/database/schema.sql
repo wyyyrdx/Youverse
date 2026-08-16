@@ -1,77 +1,46 @@
--- Users table
-CREATE TABLE IF NOT EXISTS users (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    username TEXT,
-    avatar_url TEXT,
-    created_at TIMESTAMPTZ DEFAULT now()
-);
+-- Drop old tables that have UUID user_id (safe, no data yet in these tables)
+DROP TABLE IF EXISTS behavioral_features CASCADE;
+DROP TABLE IF EXISTS predictions CASCADE;
+DROP TABLE IF EXISTS what_if_scenarios CASCADE;
+DROP TABLE IF EXISTS devices CASCADE;
 
--- Devices table
-CREATE TABLE IF NOT EXISTS devices (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+-- Recreate devices with TEXT user_id (optional, but aligning)
+CREATE TABLE devices (
+    id BIGSERIAL PRIMARY KEY,
     device_id TEXT UNIQUE NOT NULL,
-    user_id UUID REFERENCES users(id),
+    user_id TEXT,  -- changed from UUID to TEXT
     name TEXT,
     created_at TIMESTAMPTZ DEFAULT now()
 );
 
--- Raw sensor readings
-CREATE TABLE IF NOT EXISTS sensor_readings (
+-- Behavioral features table: user_id TEXT, features JSONB
+CREATE TABLE behavioral_features (
     id BIGSERIAL PRIMARY KEY,
-    device_id TEXT NOT NULL,
-    light FLOAT,
-    temperature FLOAT,
-    humidity FLOAT,
-    motion INT,  -- 0 or 1
-    noise FLOAT,
-    timestamp TIMESTAMPTZ,
-    is_simulated BOOLEAN DEFAULT FALSE,
-    created_at TIMESTAMPTZ DEFAULT now()
-);
-
-CREATE INDEX idx_sensor_readings_device_id ON sensor_readings(device_id);
-CREATE INDEX idx_sensor_readings_timestamp ON sensor_readings(timestamp);
-
--- ============================================================
--- Table: behavioral_features
--- ============================================================
--- Drop old table if it exists (only for initial setup, be careful)
--- DROP TABLE IF EXISTS behavioral_features;
-
-CREATE TABLE IF NOT EXISTS behavioral_features (
-    id BIGSERIAL PRIMARY KEY,
-    user_id UUID REFERENCES users(id),
+    user_id TEXT NOT NULL,
     window_start TIMESTAMPTZ,
     window_end TIMESTAMPTZ,
     n_samples INTEGER,
     duration_minutes FLOAT,
-    -- Flexible JSONB container for all behavioral features
     features JSONB NOT NULL DEFAULT '{}'::jsonb,
     is_simulated BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMPTZ DEFAULT now()
 );
 
--- ============================================================
--- Table: predictions
--- ============================================================
--- Drop old table if it exists (only for initial setup, be careful)
--- DROP TABLE IF EXISTS predictions;
-
-CREATE TABLE IF NOT EXISTS predictions (
+-- Predictions table: user_id TEXT, probability 0-1
+CREATE TABLE predictions (
     id BIGSERIAL PRIMARY KEY,
-    user_id UUID REFERENCES users(id),
+    user_id TEXT NOT NULL,
     state_name TEXT NOT NULL,
-    -- Probability is a float between 0.0 and 1.0 (decimal scale)
     probability FLOAT NOT NULL CHECK (probability >= 0.0 AND probability <= 1.0),
     color TEXT,
     is_simulated BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMPTZ DEFAULT now()
 );
 
--- What-if scenarios
-CREATE TABLE IF NOT EXISTS what_if_scenarios (
+-- What-if scenarios table: user_id TEXT
+CREATE TABLE what_if_scenarios (
     id BIGSERIAL PRIMARY KEY,
-    user_id UUID REFERENCES users(id),
+    user_id TEXT NOT NULL,
     scenario_type TEXT NOT NULL,
     parameters JSONB,
     result JSONB,
@@ -79,7 +48,7 @@ CREATE TABLE IF NOT EXISTS what_if_scenarios (
     created_at TIMESTAMPTZ DEFAULT now()
 );
 
--- Future states lookup
+-- Future states lookup (unchanged)
 CREATE TABLE IF NOT EXISTS future_states (
     id SERIAL PRIMARY KEY,
     name TEXT UNIQUE NOT NULL,
@@ -87,3 +56,6 @@ CREATE TABLE IF NOT EXISTS future_states (
     color TEXT,
     icon TEXT
 );
+
+-- Users table can remain with UUID, we just won't enforce FK for user_id
+-- (No changes needed for sensor_readings)
