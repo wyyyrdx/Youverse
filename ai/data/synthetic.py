@@ -40,6 +40,7 @@ def generate_reading(device_id: str, timestamp: datetime, profile: str = "focuse
         "humidity": round(random.uniform(*p["hum"]), 1),
         "motion": 1 if random.random() < p["motion_p"] else 0,  # confirmed: 0 or 1 only
         "noise": round(random.uniform(*p["noise"]), 1),
+        "is_simulated": True,  # per AI Contract: synthetic data is always explicitly marked
     }
 
 
