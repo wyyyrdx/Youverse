@@ -173,12 +173,10 @@ void loop () {
   payload += "}";
 
   Serial.println(payload);
-  sendSensorData(payload);
 
-  updateDisplay(temperature, humidity, light, motion, noise, false);
-  sendSensorData(payload);
-  updateDisplay(temperature, humidity, light, motion, noise, true);
+updateDisplay(temperature, humidity, light, motion, noise, false);
+sendSensorData(payload);
+updateDisplay(temperature, humidity, light, motion, noise, true);
 
-
-  delay(5000);
+delay(5000);
 }
