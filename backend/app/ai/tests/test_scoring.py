@@ -12,10 +12,10 @@ Covers the "validation strategy" promised in the AI Contract:
 import sys
 from datetime import datetime, timedelta, timezone
 
-from data.synthetic import generate_window, generate_reading
-from features.extract import extract_features
-from scoring.score import score_features, FUTURE_STATES
-from what_if.whatif import apply_what_if, apply_what_if_multi
+from ..data.synthetic import generate_window, generate_reading
+from ..features.extract import extract_features
+from ..scoring.score import score_features, FUTURE_STATES
+from ..what_if.whatif import apply_what_if, apply_what_if_multi
 
 FAILURES = []
 

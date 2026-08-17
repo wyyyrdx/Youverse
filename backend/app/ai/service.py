@@ -13,9 +13,9 @@ Matches what was agreed in the AI Contract + API Contract:
 - what_if_scenarios.parameters / .result are JSONB -> dicts go in as-is
 """
 
-from app.ai.features.extract import extract_features
-from app.ai.scoring.score import score_features
-from app.ai.what_if.whatif import apply_what_if, apply_what_if_multi
+from .features.extract import extract_features
+from .scoring.score import score_features
+from .what_if.whatif import apply_what_if, apply_what_if_multi
 
 
 def process_window(readings: list[dict], user_id: str) -> dict:
@@ -100,7 +100,7 @@ def process_what_if_multi(stored_features: dict, changes: list[dict], user_id: s
 
 
 if __name__ == "__main__":
-    from app.ai.data.synthetic import generate_window
+    from .data.synthetic import generate_window
 
     window = generate_window(minutes=5, profile="active")
     result = process_window(window, user_id="demo-user")

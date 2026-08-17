@@ -8,7 +8,8 @@ Reuses the exact same score_features() function as the live pipeline,
 so "changing a behavior visibly changes the distribution" (Day 5
 checkpoint) is guaranteed by construction rather than duplicated logic.
 """
-from app.ai.scoring.score import score_features
+
+from ..scoring.score import score_features
 
 
 def apply_what_if(base_features: dict, changed_feature: str, new_value: float) -> dict:
@@ -46,9 +47,9 @@ def apply_what_if_multi(base_features: dict, changes: list[dict]) -> dict:
 
 
 if __name__ == "__main__":
-    from data.synthetic import generate_window
-    from features.extract import extract_features
-    from scoring.score import score_features
+    from ..data.synthetic import generate_window
+    from ..features.extract import extract_features
+    from ..scoring.score import score_features
 
     window = generate_window(minutes=15, profile="focused")
     fv = extract_features(window)["features"]
