@@ -57,12 +57,15 @@ def extract_features(readings: list[dict], user_id: str = "user-1") -> dict:
 
             # Composite proxies (still just observable signals, not claims about behavior)
             "quiet_score": round(max(0.0, 1 - (mean(noise) / 80)), 3),
-            "activity_score": round(min(1.0, mean(motion) / 3), 3),
+            # motion is confirmed 0/1 only (per Waad's sensor contract), so avg_motion
+            # already sits in 0-1 range — no further scaling needed here.
+            "activity_score": round(min(1.0, mean(motion)), 3),
         },
     }
 
+
 if __name__ == "__main__":
-    from data.synthetic import generate_window
+    from ..data.synthetic import generate_window
 
     window = generate_window(minutes=15, profile="focused")
     print(extract_features(window))

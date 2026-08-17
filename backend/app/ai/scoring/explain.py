@@ -10,7 +10,7 @@ Kept separate from scoring.py so scoring stays a simple, fast, pure
 function — explanation is a secondary pass over the same weights.
 """
 
-from scoring.score import WEIGHTS
+from .score import WEIGHTS
 
 
 def explain_top_state(feature_vector: dict, distribution: list[dict], top_n: int = 3) -> dict:
@@ -63,9 +63,9 @@ def _build_summary(top_state: str, top_contributors: list[dict]) -> str:
 
 
 if __name__ == "__main__":
-    from data.synthetic import generate_window
-    from features.extract import extract_features
-    from scoring.score import score_features
+    from ..data.synthetic import generate_window
+    from ..features.extract import extract_features
+    from .score import score_features
 
     window = generate_window(minutes=5, profile="active")
     fv = extract_features(window)["features"]
