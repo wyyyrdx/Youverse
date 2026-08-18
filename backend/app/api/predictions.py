@@ -30,11 +30,19 @@ async def trigger_prediction_calculation(request: CalculateRequest):
 
 @router.get("/predictions/{user_id}")
 async def get_latest_predictions(user_id: str):
-    """Return latest predictions for a user (score 0-100 for frontend readability)."""
+    """
+    Return latest predictions for a user in the agreed contract shape:
+    {
+      "status": "success",
+      "data": [ {"future_state": str, "score": float}, ... ],
+      "is_simulated": bool
+    }
+    """
     client = SupabaseClient.get_instance().client
     if client is None:
         raise HTTPException(status_code=500, detail="Database not configured")
 
+    # Fetch latest 5 prediction rows (one for each future state)
     response = client.table("predictions") \
         .select("*") \
         .eq("user_id", user_id) \
@@ -45,20 +53,22 @@ async def get_latest_predictions(user_id: str):
     if not response.data:
         raise HTTPException(status_code=404, detail="No predictions found")
 
-    # Convert DB probability (0-1) to score (0-100)
-    states = []
+    # Convert DB rows (probability 0-1, state_name) to contract format:
+    # { future_state, score (0-100) }
+    distribution = []
     for row in response.data:
-        states.append({
-            "state_name": row["state_name"],
-            "score": round(row["probability"] * 100, 2),
-            "color": row.get("color")
+        distribution.append({
+            "future_state": row["state_name"],
+            "score": round(row["probability"] * 100, 2)
         })
 
+    # Determine is_simulated flag from the latest prediction row
+    is_simulated = response.data[0].get("is_simulated", False)
+
     return {
-        "user_id": user_id,
-        "timestamp": response.data[0]["created_at"],
-        "states": states,
-        "total_score": sum(s["score"] for s in states)
+        "status": "success",
+        "data": distribution,
+        "is_simulated": is_simulated
     }
 
 @router.post("/what-if")
