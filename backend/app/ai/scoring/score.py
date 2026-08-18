@@ -15,17 +15,17 @@ FUTURE_STATES = ["Focused You", "Consistent You", "Creative You", "Burned-Out Yo
 # These are a starting point — tune them once you see real sensor ranges
 # from Waad, and document any change as part of the AI contract.
 WEIGHTS = {
-    "light_stability":  {"Focused You": 2.0, "Consistent You": 1.5, "Creative You": 0.5, "Burned-Out You": 0.0, "Active You": -1.0},
-    "noise_stability":  {"Focused You": 1.5, "Consistent You": 1.0, "Creative You": 0.0, "Burned-Out You": 0.5, "Active You": -1.5},
-    "quiet_score":      {"Focused You": 1.5, "Consistent You": 0.5, "Creative You": 0.5, "Burned-Out You": 0.5, "Active You": -1.0},
-    "activity_score":   {"Focused You": -1.0, "Consistent You": 0.0, "Creative You": 0.5, "Burned-Out You": -0.5, "Active You": 2.5},
-    "motion_rate":      {"Focused You": -0.5, "Consistent You": 0.0, "Creative You": 0.5, "Burned-Out You": -0.5, "Active You": 1.5},
+    "light_stability":  {"Focused You": 1.2, "Consistent You": 1.0, "Creative You": 0.5, "Burned-Out You": 0.0, "Active You": -0.5},
+    "noise_stability":  {"Focused You": 1.0, "Consistent You": 0.8, "Creative You": 0.0, "Burned-Out You": 0.5, "Active You": -0.8},
+    "quiet_score":      {"Focused You": 1.0, "Consistent You": 0.5, "Creative You": 0.5, "Burned-Out You": 0.5, "Active You": -0.5},
+    "activity_score":   {"Focused You": -1.0, "Consistent You": 0.0, "Creative You": 0.5, "Burned-Out You": -0.5, "Active You": 4.0},
+    "motion_rate":       {"Focused You": -0.5, "Consistent You": 0.0, "Creative You": 0.5, "Burned-Out You": -0.5, "Active You": 3.0},
     # Level-based signals below react to the actual sensor value, not just
     # its variance — without these, a constant-max reading and a
     # constant-min reading looked identical (both fully "stable").
     "avg_noise":        {"Focused You": -0.03, "Consistent You": -0.01, "Creative You": 0.01, "Burned-Out You": 0.01, "Active You": 0.03},
     "avg_light":        {"Focused You": 0.01, "Consistent You": 0.01, "Creative You": 0.01, "Burned-Out You": -0.03, "Active You": 0.01},
-    "avg_temperature":  {"Focused You": -0.05, "Consistent You": 0.0, "Creative You": 0.0, "Burned-Out You": 0.1, "Active You": 0.0},
+    "avg_temperature":  {"Focused You": -0.01, "Consistent You": 0.0, "Creative You": 0.0, "Burned-Out You": 0.02, "Active You": 0.0},
 }
 
 
