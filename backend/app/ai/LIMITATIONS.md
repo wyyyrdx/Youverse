@@ -35,8 +35,8 @@ those features to a distribution across five "future state" categories.
 
 ## Validation strategy
 
-Covered in `tests/test_scoring.py`, run with `python3 -m tests.test_scoring`
-from inside `ai/`. It checks:
+Covered in `tests/test_scoring.py`, run with `python3 -m ai.tests.test_scoring`
+from `backend/app/`. It checks:
 
 - Scores always sum to exactly 100 across all five synthetic behavioral
   profiles.
@@ -49,16 +49,42 @@ from inside `ai/`. It checks:
   instead of failing silently.
 
 This confirms the model is **robust** (doesn't crash, always
-normalizes correctly). It does not yet confirm the model is
-**calibrated** — the weights are a first-pass design choice and will
-be retuned once real sensor data is available.
+normalizes correctly). Calibration was further validated across two
+rounds of real sensor data from the live ESP32 device — see below.
+
+## Real-data calibration (completed)
+
+Two rounds of real sensor data from the live device were used to find
+and fix issues that synthetic testing alone did not catch:
+
+1. **Motion range bug.** `activity_score` was computed as `avg_motion / 3`,
+   which assumed motion could range 0–3. The confirmed sensor contract
+   says motion is strictly 0 or 1, so this formula capped `activity_score`
+   at 0.33 even during a fully active window, silently suppressing the
+   Active You state. Fixed by removing the incorrect division.
+
+2. **Weight imbalance.** Even after the fix above, a real window with
+   genuine motion still lost to a maxed-out `light_stability` /
+   `noise_stability` / `quiet_score` combination, because those weights
+   were too strong relative to the motion signal. Rebalanced so a real
+   motion signal can compete fairly.
+
+3. **Temperature bias.** `avg_temperature` was weighted too strongly
+   (0.1) relative to its real-world range. Since indoor temperature
+   barely changes between test runs (~24°C every time), this acted as
+   a near-constant bias of +2.4 toward Burned-Out You in every real
+   test, regardless of actual behavior. Reduced the weight by 5x so it
+   no longer dominates.
+
+All three were found by comparing real output against expectation
+across two separate live test runs, and confirmed fixed by re-running
+the same real data through the corrected model. All 20 checks in
+`tests/test_scoring.py` still pass after each fix.
 
 ## Known open item
 
-Weight calibration is ongoing. An early version of the weights relied
-almost entirely on within-window *variance* (e.g. "how stable was the
-light"), which meant a window of constantly-maxed sensor readings and
-a window of constantly-minimum readings could score nearly
-identically, since both have zero variance. This has been partially
-addressed by adding average-signal-level weights alongside the
-variance-based ones, but further tuning against real data is expected.
+Light and noise stability weights have now been tested against real
+variation (the second live test included deliberate lighting/noise
+changes) and behaved sensibly. Further tuning may still be worthwhile
+once more real-world sessions accumulate, but no known bugs remain as
+of this writing.
