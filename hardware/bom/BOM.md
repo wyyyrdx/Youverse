@@ -10,6 +10,7 @@
 | 6 | Breadboard (half-size) | 1 | Prototyping |
 | 7 | Jumper Wires (Male-Male) | ~25 | Connections |
 | 8 | Micro-USB Cable | 1 | Power + programming |
+| 9 | Potentiometer (10kΩ) | 1 | Manual noise-level input (replaces random simulation) |
 
 ## Notes
 - Noise sensor: simulated in firmware, no physical component required for MVP.
