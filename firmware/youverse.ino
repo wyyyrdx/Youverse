@@ -1,3 +1,9 @@
+// ============================================
+// Youverse - ESP32 Firmware
+// Reads environmental sensors, displays live 
+// readings on OLED, and sends data to backend
+// ============================================
+
 #include <DHT.h>
 #include <WiFi.h>
 #include <time.h>
@@ -25,6 +31,7 @@ const char* password = "";
 
 const char* serverUrl = "https://youverse-stag-3.up.railway.app/api/sensors/ingest";
 
+// ---- NTP settings for real-time timestamp ----
 const char* ntpServer = "pool.ntp.org";
 const long gmtOffset_sec =0;
 const int daylightOffset_sec =0;
@@ -39,6 +46,7 @@ void connectWiFi() {
   Serial.println("\nWiFi connected, IP: " + WiFi.localIP().toString());
 }
 
+// Syncs device time with an NTP server so timestamps are accurate
 void setupTime() {
   configTime(gmtOffset_sec, daylightOffset_sec, ntpServer);
   Serial.print("Waiting for NTP time sync");
@@ -65,6 +73,8 @@ String getISOTimestamp() {
   return String(buf);
 }
 
+// Sends the sensor JSON payload to the backend via HTTPS POST
+// Retries up to 3 times with a 1s delay between attempts on failure
 void sendSensorData(String jsonPayload) {
   if (WiFi.status() != WL_CONNECTED) {
     Serial.println("WiFi not connected, skipping send");
@@ -128,6 +138,8 @@ void setup () {
   setupTime();
 }
 
+// Draws the current sensor readings + send status on the OLED screen
+// sent=false shown before the HTTP request, sent=true shown after success
 void updateDisplay(float temp, float hum, float light, int motion, float noise, bool sent) {
   display.clearDisplay();
   display.setCursor(0, 0);
