@@ -176,7 +176,7 @@ void loop () {
 
   String payload = "{";
   payload += "\"device_id\":\"esp32-sim-001\",";
-  payload += "\"timestamp\":\"" + timestamp + "\",",
+  payload += "\"timestamp\":\"" + timestamp + "\",";
   payload += "\"light\":" + String(light, 1) + ",";
   payload += "\"temperature\":" + String(temperature, 1) + ",";
   payload += "\"humidity\":" + String(humidity, 1) + ",";
