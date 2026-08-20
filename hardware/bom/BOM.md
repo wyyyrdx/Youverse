@@ -1,4 +1,4 @@
-# Bill of Materials (BOM) — SUPERPOSITION YOU
+# Bill of Materials (BOM) 
 
 | # | Component | Qty | Notes |
 |---|-----------|-----|-------|
