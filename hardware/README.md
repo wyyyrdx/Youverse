@@ -22,8 +22,12 @@ planned post-hackathon once components are sourced.
 ✅ Full end-to-end pipeline verified live (sensors → OLED → WiFi → 
    backend → Supabase)
 ✅ Real sensor data collected and used for AI model calibration
-⏳ PCB layout - in progress
 ✅ Physical enclosure design 
+✅ ERC (Electrical Rules Check) passed — 32 remaining "errors" are all 
+   expected unused pins (ESP32 SPI-flash pins, USB D+/D-/ID/Shield, 
+   unused GPIOs) with no functional impact. 0 real connectivity issues. 
+   See kicad/ERC.rpt for full report.
+⏳ PCB layout - in progress
 
 ## Components & Pin Mapping
 | Component | Signal | ESP32 Pin |
