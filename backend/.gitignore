@@ -1,0 +1,13 @@
+# Python virtual environment - never commit this folder
+venv/
+
+# Byte-compiled / cache files
+__pycache__/
+*.py[cod]
+
+# Environment variables containing secrets (Supabase keys, etc.)
+.env
+
+# IDE and editor settings
+.vscode/
+.idea/
