@@ -5330,6 +5330,9 @@
 		(pin "3"
 			(uuid "5409dd90-6333-4c96-a56f-ba1b2898928a")
 		)
+		(pin "3"
+			(uuid "5409dd90-6333-4c96-a56f-ba1b2898928a")
+		)
 		(pin "2"
 			(uuid "91f39e6f-cc3b-40ce-84eb-4cdeab877db4")
 		)
