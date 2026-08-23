@@ -1,0 +1,50 @@
+** Drc report for youverse-hardware.kicad_pcb **
+** Created on 2026-08-23T10:03:21 **
+** Report includes: Errors, Warnings, Exclusions **
+
+** Found 0 DRC violations **
+
+** Found 8 unconnected pads **
+[unconnected_items]: Missing connection between items
+    Local override; error
+    @(112.5000 mm, 59.9200 mm): Zone [+3V3] on F.Cu, priority 1
+    @(112.5000 mm, 59.9200 mm): Zone [+3V3] on F.Cu, priority 1
+[unconnected_items]: Missing connection between items
+    Local override; error
+    @(112.5000 mm, 59.9200 mm): Zone [+3V3] on F.Cu, priority 1
+    @(112.5000 mm, 59.9200 mm): Zone [+3V3] on F.Cu, priority 1
+[unconnected_items]: Missing connection between items
+    Local override; error
+    @(112.5000 mm, 59.9200 mm): Zone [+3V3] on F.Cu, priority 1
+    @(112.5000 mm, 59.9200 mm): Zone [+3V3] on F.Cu, priority 1
+[unconnected_items]: Missing connection between items
+    Local override; error
+    @(115.1000 mm, 96.6200 mm): Pad SH [unconnected-(J1-Shield-PadSH)] of J1 on F.Cu
+    @(117.0000 mm, 96.6200 mm): Pad SH [unconnected-(J1-Shield-PadSH)] of J1 on F.Cu
+[unconnected_items]: Missing connection between items
+    Local override; error
+    @(115.5000 mm, 93.9200 mm): PTH pad SH [unconnected-(J1-Shield-PadSH)] of J1
+    @(115.1000 mm, 96.6200 mm): Pad SH [unconnected-(J1-Shield-PadSH)] of J1 on F.Cu
+[unconnected_items]: Missing connection between items
+    Local override; error
+    @(117.0000 mm, 96.6200 mm): Pad SH [unconnected-(J1-Shield-PadSH)] of J1 on F.Cu
+    @(119.0000 mm, 96.6200 mm): Pad SH [unconnected-(J1-Shield-PadSH)] of J1 on F.Cu
+[unconnected_items]: Missing connection between items
+    Local override; error
+    @(119.0000 mm, 96.6200 mm): Pad SH [unconnected-(J1-Shield-PadSH)] of J1 on F.Cu
+    @(120.9000 mm, 96.6200 mm): Pad SH [unconnected-(J1-Shield-PadSH)] of J1 on F.Cu
+[unconnected_items]: Missing connection between items
+    Local override; error
+    @(120.9000 mm, 96.6200 mm): Pad SH [unconnected-(J1-Shield-PadSH)] of J1 on F.Cu
+    @(120.5000 mm, 93.9200 mm): PTH pad SH [unconnected-(J1-Shield-PadSH)] of J1
+
+** Found 0 Footprint errors **
+
+** Ignored checks **
+    - Footprint has no courtyard defined
+    - Track endpoint not centered on via
+    - Tuning profile track geometries
+    - Footprint doesn't match symbol's footprint filters
+    - Footprint component type doesn't match footprint pads
+
+** End of Report **
