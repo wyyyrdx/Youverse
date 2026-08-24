@@ -1,6 +1,6 @@
 import type { FutureSelf } from '../types'
 
-// Mock modeled likelihoods — in production these come from
+// Mock modeled likelihoods - in production these come from
 // GET /api/predictions/{user_id}, which returns future_state + score (0-100).
 // These are illustrative only, not real predictions about anyone's future.
 export const futureSelves: FutureSelf[] = [

@@ -1,15 +1,11 @@
 import { useState } from 'react'
 import { futureSelves as fallbackFutureSelves } from '../data/futureSelves'
 import type { FutureSelf, WhatIfResult } from '../types'
-import Badge from './Badge'
 import { usePredictions } from '../hooks/usePredictions'
 import { api, ApiError } from '../services/api'
 import { getUserId } from '../utils/userId'
 import { mergeWithLiveScores } from '../utils/mapFutureStates'
 
-// Local fallback "model", used only if POST /api/what-if is unreachable or the request
-// shape backend expects turns out to differ from what we're sending (see api.ts note).
-// Keeps the interaction working end-to-end even before that contract is locked down.
 function mockWhatIf(text: string, baseline: FutureSelf[]): WhatIfResult {
   const lower = text.toLowerCase()
   const nudges: Record<string, number> = {
@@ -19,7 +15,9 @@ function mockWhatIf(text: string, baseline: FutureSelf[]): WhatIfResult {
     consistent: 0,
     'burned-out': 0,
   }
-  const bump = (id: string, amount: number) => (nudges[id] = (nudges[id] ?? 0) + amount)
+  const bump = (id: string, amount: number) => {
+    nudges[id] = (nudges[id] ?? 0) + amount
+  }
 
   if (/sleep|rest|earlier|routine|consisten/.test(lower)) {
     bump('consistent', 14)
@@ -43,7 +41,7 @@ function mockWhatIf(text: string, baseline: FutureSelf[]): WhatIfResult {
   }
   if (text.trim().length === 0) {
     return {
-      narrative: "Tell me what you're changing, and I'll show you where it moves the distribution.",
+      narrative: 'Describe one change. The model will shift the possibility space.',
       updated: baseline.map((f) => ({ id: f.id, score: f.score })),
     }
   }
@@ -52,14 +50,13 @@ function mockWhatIf(text: string, baseline: FutureSelf[]): WhatIfResult {
   const floor = withNudges.map((f) => ({ id: f.id, raw: Math.max(f.raw, 2) }))
   const total = floor.reduce((sum, f) => sum + f.raw, 0)
   const updated = floor.map((f) => ({ id: f.id, score: Math.round((f.raw / total) * 100) }))
-
   const drift = 100 - updated.reduce((s, f) => s + f.score, 0)
   updated[0].score += drift
 
   const winner = [...updated].sort((a, b) => b.score - a.score)[0]
   const winnerName = baseline.find((f) => f.id === winner.id)?.name ?? 'a future self'
 
-  const narrative = `Read as behavior, that intention leans your signals toward stiller light, more regular motion, and less late-night noise. Modeled forward, it shifts the distribution — ${winnerName} moves to the front at ${winner.score}%. Nothing is fixed. This is what today's pattern would become if it kept going.`
+  const narrative = `The model reads that intention as a shift in light, motion, and noise patterns. ${winnerName} moves forward to ${winner.score}%. Nothing is fixed. This is what the current pattern becomes if it continues.`
 
   return { narrative, updated }
 }
@@ -78,17 +75,16 @@ export default function WhatIf() {
       const merged = mergeWithLiveScores(res.data)
       setResult({
         narrative:
-          "Modeled against the real scoring engine: here's how that intention shifts your distribution.",
+          'Modeled against the scoring engine. Here is how that intention shifts your distribution.',
         updated: merged.map((f) => ({ id: f.id, score: f.score })),
       })
       setSource('live')
     } catch (err) {
       console.warn(
-        'Youverse: /api/what-if unavailable, using local mock model —',
+        'Youverse: /api/what-if unavailable, using local mock -',
         err instanceof ApiError ? err.message : err,
       )
-      // small delay so the local fallback still feels like a deliberate modeling pass
-      await new Promise((resolve) => window.setTimeout(resolve, 500))
+      await new Promise((r) => window.setTimeout(r, 600))
       setResult(mockWhatIf(text, baseline.length ? baseline : fallbackFutureSelves))
       setSource('local')
     } finally {
@@ -102,43 +98,41 @@ export default function WhatIf() {
   })
 
   return (
-    <section id="what-if" className="relative px-6 py-28 md:py-36">
-      <div className="mx-auto max-w-2xl text-center">
-        <Badge color="cyan">WHAT IF</Badge>
-        <h2 className="mt-4 font-display text-3xl md:text-5xl font-bold text-mist">
-          Change one behavior. Watch the futures move.
+    <section id="what-if" className="relative px-4 md:px-6 py-24 md:py-32">
+      <div className="atmosphere-glow opacity-30" aria-hidden />
+
+      <div className="mx-auto max-w-xl text-left">
+        <p className="font-mono text-[10px] tracking-[0.3em] text-mist-faint mb-3">SIMULATION CHAMBER</p>
+        <h2 className="font-display text-2xl md:text-4xl font-bold text-mist">
+          What if you changed one thing?
         </h2>
         <p className="mt-4 text-sm md:text-base text-mist-muted leading-relaxed">
-          Write what you're planning to change — sleeping earlier, moving more, finishing
-          something you started. The model recalculates your distribution as if you'd already
-          begun.
+          Change a modeled input and watch the possibility space respond.
         </p>
       </div>
 
-      <div className="mx-auto mt-12 max-w-2xl">
-        <textarea
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-          placeholder="I want to sleep more, move daily, and finish my side project…"
-          rows={4}
-          className="w-full resize-none rounded-2xl border border-white/10 bg-void-panel/60 backdrop-blur-md px-5 py-4 text-sm md:text-base text-mist placeholder:text-mist-faint focus:border-cyan/60 focus:outline-none transition-colors duration-300"
-        />
+      <div className="mx-auto mt-12 max-w-xl">
+        <div className="glass-strong rounded-[24px] p-5 md:p-6">
+          <textarea
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+            placeholder="I want to sleep earlier, move daily, and finish my side project…"
+            rows={4}
+            className="w-full resize-none rounded-[16px] border border-white/10 bg-black/30 px-4 py-3 text-sm text-mist placeholder:text-mist-faint focus:border-magenta/40 focus:outline-none transition-colors duration-300"
+          />
 
-        <div className="mt-5 flex justify-center">
-          <button
-            onClick={handleSubmit}
-            disabled={loading}
-            className="rounded-full bg-gradient-to-r from-magenta to-cyan px-8 py-3 font-mono text-sm tracking-wide text-void font-medium transition-transform duration-300 hover:scale-105 disabled:opacity-60 disabled:hover:scale-100"
-          >
-            {loading ? 'Modeling…' : 'See what happens'}
-          </button>
+          <div className="mt-5 flex justify-center">
+            <button onClick={handleSubmit} disabled={loading} className="btn-primary disabled:opacity-50">
+              {loading ? 'Recalculating…' : 'Run simulation'}
+            </button>
+          </div>
         </div>
 
         {result && (
-          <div className="mt-10 rounded-2xl border border-white/10 bg-void-panel/50 backdrop-blur-md px-6 py-6">
-            <div className="flex items-center justify-between gap-4">
-              <p className="text-sm md:text-base leading-relaxed text-mist/90">{result.narrative}</p>
-              <span className="shrink-0 font-mono text-[9px] tracking-[0.2em] text-mist-faint">
+          <div className="mt-8 glass rounded-[24px] px-5 py-6 transition-all duration-700 ease-out">
+            <div className="flex items-start justify-between gap-4">
+              <p className="text-sm leading-relaxed text-mist/90">{result.narrative}</p>
+              <span className="shrink-0 font-mono text-[9px] tracking-wide text-mist-faint">
                 {source === 'live' ? 'LIVE MODEL' : 'LOCAL FALLBACK'}
               </span>
             </div>
@@ -147,11 +141,15 @@ export default function WhatIf() {
               {displayed
                 .slice()
                 .sort((a, b) => b.score - a.score)
-                .map((f) => (
-                  <div key={f.id} className="flex items-center gap-3">
-                    <span className="w-28 shrink-0 font-mono text-xs text-mist-muted">
-                      {f.name}
-                    </span>
+                .map((f, i) => (
+                  <div
+                    key={f.id}
+                    className="flex items-center gap-3"
+                    style={{
+                      animation: `fadeBar 0.7s cubic-bezier(0.22,1,0.36,1) ${i * 0.08}s both`,
+                    }}
+                  >
+                    <span className="w-28 shrink-0 font-mono text-xs text-mist-muted">{f.name}</span>
                     <div className="h-2 flex-1 overflow-hidden rounded-full bg-white/5">
                       <div
                         className="h-full rounded-full transition-all duration-700 ease-out"
@@ -170,11 +168,18 @@ export default function WhatIf() {
             </div>
 
             <p className="mt-5 text-[11px] font-mono text-mist-faint">
-              A modeled reaction to your text, not a promise about who you'll become.
+              A modeled reaction to your text. Not a promise about who you will become.
             </p>
           </div>
         )}
       </div>
+
+      <style>{`
+        @keyframes fadeBar {
+          from { opacity: 0; transform: translateX(-8px); }
+          to { opacity: 1; transform: translateX(0); }
+        }
+      `}</style>
     </section>
   )
 }

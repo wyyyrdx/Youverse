@@ -3,7 +3,7 @@ export interface FutureSelf {
   name: string
   score: number // 0-100, modeled likelihood, not a real probability
   color: string // hex, used for glow + orbit accent
-  glow: string // tailwind-friendly rgba for box-shadow
+  glow: string // rgba for box-shadow
   orbitRadius: number // px, distance from center on desktop
   orbitDuration: number // seconds for one full revolution
   orbitOffset: number // deg, starting angle

@@ -26,9 +26,10 @@ export function usePredictions() {
       })
       .catch((err) => {
         if (cancelled) return
-        // Backend unreachable, no predictions yet for this user, CORS issue, etc.
-        // Fall back to local mock data so the experience still works.
-        console.warn('Youverse: falling back to mock predictions —', err instanceof ApiError ? err.message : err)
+        console.warn(
+          'Youverse: falling back to mock predictions -',
+          err instanceof ApiError ? err.message : err,
+        )
         setFutureSelves(mockFutureSelves)
         setConnection('offline')
       })

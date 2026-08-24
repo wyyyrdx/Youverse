@@ -1,277 +1,380 @@
 # 🌌 Youverse
 
-> "You are here. Your habits shape the possibilities. Your future isn't one state — it's a superposition of possibilities."
+> **You are here. Your habits shape the possibilities.**
 
-A quantum-inspired behavioral modeling system. A physical ESP32 device collects environmental/behavioral signals, transforms them into features, and a lightweight AI model generates modeled likelihoods for several possible future selves visualized as an interactive "superposition" the user can collapse by changing a habit.
+### Built for Reverie Hacks 2026
 
-**These are not real quantum probabilities.** The quantum concept is a metaphor; the underlying system is a behavioral modeling and simulation system. All probabilities are modeled/simulated likelihoods, not predictions of an actual future.
+Youverse is a behavioral simulation platform that explores how your current habits and environment can influence different possible versions of your future self.
 
----
+Instead of telling you what your future will be, Youverse helps you understand how your **current state can shape future possibilities**.
 
-## Table of Contents
-- [The Core Idea](#the-core-idea)
-- [System Architecture](#system-architecture)
-- [Tech Stack](#tech-stack)
-- [Repository Structure](#repository-structure)
-- [Getting Started (Full Setup)](#getting-started-full-setup)
-  - [1. Backend Setup](#1-backend-setup)
-  - [2. Database Setup](#2-database-setup)
-  - [3. AI/ML Setup](#3-aiml-setup)
-  - [4. Firmware / Hardware Setup](#4-firmware--hardware-setup)
-  - [5. Frontend Setup](#5-frontend-setup)
-- [Data Flow](#data-flow)
-- [API Reference](#api-reference)
-- [Team](#team)
-- [Current Status](#current-status)
-- [Scientific Honesty](#scientific-honesty)
+[🎥 Watch the Demo](YOUR_DEMO_VIDEO_LINK)
 
 ---
 
-## The Core Idea
+## 📖 Contents
 
-- **Present State** — live environmental/behavioral signals from a physical device
-- **Future Selves** — Focused You, Consistent You, Creative You, Burned-Out You, Active You — each with a modeled likelihood
-- **What-If Engine** — the user changes a hypothetical habit and watches the distribution recalculate live
+- [🧠 The Idea](#-the-idea)
+- [✨ Why Youverse?](#-why-youverse)
+- [🔮 How It Works](#-how-it-works)
+- [🪐 The Future Selves](#-the-future-selves)
+- [🎮 What-If Simulation](#-what-if-simulation)
+- [🏗️ System Architecture](#️-system-architecture)
+- [🛠️ Tech Stack](#️-tech-stack)
+- [📁 Repository Structure](#-repository-structure)
+- [🚀 How to run the project](#-How-to-run-the-project)
+- [📊 Data Flow](#-data-flow)
+- [🔬 Scientific Honesty](#-scientific-honesty)
+- [🧪 Current Status](#-current-status)
+- [🌱 Future Vision](#-future-vision)
+- [👥 Team](#-team)
 
-## System Architecture
+---
 
+## 🧠 The Idea
+
+We often think about the future as a single destination.
+
+But the future is shaped by what we repeatedly do today.
+
+Youverse turns that idea into an interactive experience.
+
+A physical device collects environmental and behavioral signals. These signals are transformed into behavioral features and processed by a lightweight modeling system. The result is a distribution across several possible **Future Selves**.
+
+The user can then explore a **What-If scenario** by changing a hypothetical habit and observing how the modeled distribution changes.
+
+> **Youverse does not predict your actual future. It helps you explore how your present behavior can influence different modeled possibilities.**
+
+---
+
+## ✨ Why Youverse?
+
+Most productivity and habit-tracking tools tell you what you are doing.
+
+Youverse asks a different question:
+
+> **"If I keep going like this, what kind of person could I be moving toward?"**
+
+And more importantly:
+
+> **"What happens if I change something today?"**
+
+The goal is not to create a deterministic prediction.
+
+The goal is to make the connection between **present behavior and future possibilities** tangible, visual, and interactive.
+
+---
+
+## 🔮 How It Works
+
+```text
+Physical Environment
+        ↓
+ESP32 + Sensors
+        ↓
+Behavioral Signals
+        ↓
+Feature Extraction
+        ↓
+Behavioral Modeling
+        ↓
+Future-State Distribution
+        ↓
+Interactive What-If Simulation
+        ↓
+3D Future Selves Visualization
 ```
-ESP32 (sensors) → WiFi/HTTPS → FastAPI Backend → Supabase (PostgreSQL)
-   → Feature Extraction → AI Scoring Model → Future-State Distribution
-   → What-If Simulation → React + TypeScript Frontend → 3D Visualization
+
+### 1. Sense
+
+An ESP32-based device collects environmental and behavioral signals using sensors such as:
+
+- Light
+- Motion
+- Temperature
+- Other environmental signals
+
+### 2. Interpret
+
+The collected signals are transformed into engineered behavioral features such as activity, stability, quietness, and other relevant indicators.
+
+### 3. Model
+
+A lightweight behavioral scoring system maps these features to several modeled future states.
+
+### 4. Visualize
+
+The results are presented as an interactive visualization where multiple possible Future Selves coexist.
+
+### 5. Explore
+
+The user can modify a hypothetical behavioral input through the **What-If Engine** and immediately see how the modeled distribution changes.
+
+---
+
+## 🪐 The Future Selves
+
+Youverse represents the future as a set of possibilities rather than a single prediction.
+
+Each Future Self represents a modeled behavioral direction based on the current signals and assumptions.
+
+| Future Self | Represents |
+|---|---|
+| 🎯 Focused You | Strong concentration and consistency |
+| 🔥 Consistent You | Stable routines and sustained behavior |
+| 🎨 Creative You | Higher exploration and creative activity |
+| ⚡ Active You | Increased physical activity and engagement |
+| 🌫️ Burned-Out You | Patterns associated with low stability or sustained strain |
+
+These states are part of the simulation and should not be interpreted as psychological or medical diagnoses.
+
+---
+
+## 🎮 What-If Simulation
+
+One of the core ideas behind Youverse is that **small changes can change the modeled possibilities**.
+
+The user can modify a hypothetical behavioral input and observe the result.
+
+```text
+Current State
+     ↓
+"What if I become more consistent?"
+     ↓
+Recalculate
+     ↓
+New Future-State Distribution
 ```
 
-## Tech Stack
+This turns the experience from simply observing data into exploring possible consequences of changing behavior.
+
+---
+
+## 🏗️ System Architecture
+
+```text
+ESP32 Sensors
+      │
+      │ WiFi / HTTPS
+      ▼
+FastAPI Backend
+      │
+      ├── Data Processing
+      ├── Feature Extraction
+      └── Behavioral Modeling
+      │
+      ▼
+Supabase / PostgreSQL
+      │
+      ▼
+Future-State Distribution
+      │
+      ▼
+What-If Simulation
+      │
+      ▼
+React + TypeScript
+      │
+      ▼
+Three.js / React Three Fiber
+      │
+      ▼
+Interactive 3D Visualization
+```
+
+---
+
+## 🛠️ Tech Stack
 
 | Layer | Technology |
 |---|---|
-| Hardware | ESP32-WROOM-32, DHT11/22, LDR, PIR motion sensor, potentiometer, SSD1306 OLED |
+| Hardware | ESP32-WROOM-32 |
+| Sensors | DHT11/22, LDR, PIR, potentiometer |
+| Display | SSD1306 OLED |
 | PCB Design | KiCad |
-| Firmware | C++ (Arduino framework), simulated via Wokwi |
-| Backend | Python, FastAPI |
-| Database | Supabase (PostgreSQL) |
-| AI/ML | Python, engineered behavioral features + weighted scoring |
-| Frontend | React, TypeScript, Tailwind CSS |
+| Firmware | C++ / Arduino |
+| Hardware Simulation | Wokwi |
+| Backend | Python / FastAPI |
+| Database | Supabase / PostgreSQL |
+| AI / ML | Python / Engineered Behavioral Features / Weighted Scoring |
+| Frontend | React / TypeScript |
+| Styling | Tailwind CSS |
 | 3D Visualization | Three.js / React Three Fiber |
-| Hosting | Railway (backend), free-tier Supabase |
+| Backend Hosting | Railway |
 
-## Repository Structure
+---
 
-```
-superposition-you/
-├── frontend/              # React + TypeScript app
-│   ├── src/
-│   └── package.json
-├── backend/                # FastAPI app
-│   └── app/
-│       ├── main.py
-│       ├── api/            # Route handlers (ingest, predictions, what-if)
-│       ├── models/         # Request/response schemas
-│       ├── database/       # Supabase client + queries
-│       └── ai/              # Feature extraction, scoring model, calibration scripts
-├── hardware/
-│   ├── bom/                 # Bill of Materials
-│   ├── kicad/                # Schematic + PCB project files (.kicad_pro/.kicad_sch/.kicad_pcb)
-│   ├── schematics/            # Exported schematic (PDF)
-│   ├── pcb/                   # PCB layout renders, DRC report
-│   ├── simulation/wokwi/       # Wokwi simulation files (diagram.json, wokwi.toml)
-│   └── wiring/                 # Pin connection reference
-├── firmware/                # ESP32 C++ firmware (.ino) + flowchart
-├── docs/                     # Project documentation, tech reports
-├── .env.example
-└── README.md                 # This file
+## 📁 Repository Structure
+
+```text
+Youverse/
+├── frontend/
+├── backend/
+├── hardware/ ---> checkout DRC (hardware/pcb) & ERC (hardware/schematic)
+├── firmware/
+├── docs/ ---> tech report & flowchart
+├── .gitignore
+└── README.md
+└── LICENSE
 ```
 
 ---
 
-## Getting Started (Full Setup)
+## 🚀 How to run the project
 
 ### Prerequisites
+
 - Python 3.10+
-- Node.js 18+ and npm
-- A free [Supabase](https://supabase.com) account
-- [Arduino CLI](https://arduino.github.io/arduino-cli/latest/installation/) or Arduino IDE (for firmware)
-- A free [Wokwi](https://wokwi.com) account (for hardware simulation) — or the VS Code Wokwi extension
+- Node.js 18+
+- npm
+- Supabase account
+- Arduino CLI or Arduino IDE
+- Wokwi account for hardware simulation
 
----
-
-### 1. Backend Setup
+### Clone the Repository
 
 ```bash
-git clone <repo-url>
+git clone https://github.com/wyyyrdx/Youverse.git
+cd Youverse
+```
+
+### Backend
+
+```bash
 cd backend
-pip install -r requirements.txt --break-system-packages   # or use a venv
+pip install -r requirements.txt
 ```
 
-Create a `.env` file in `backend/` based on `.env.example`:
+Create a `.env` file based on `.env.example`:
+
 ```env
-SUPABASE_URL=https://your-project.supabase.co
-SUPABASE_KEY=your-supabase-anon-or-publishable-key
+SUPABASE_URL=your_supabase_url
+SUPABASE_KEY=your_supabase_key
 ```
 
-Run the backend locally:
+Run the backend:
+
 ```bash
 uvicorn app.main:app --reload --port 8000
 ```
 
-Once running, interactive API docs (Swagger UI) are available at:
-```
+API documentation:
+
+```text
 http://localhost:8000/docs
 ```
 
-**Live deployed backend (for reference/testing without local setup):**
-```
-https://youverse-stag-3.up.railway.app/docs
-```
-
----
-
-### 2. Database Setup
-
-1. Create a free project at [supabase.com](https://supabase.com).
-2. Run the schema SQL (found in `backend/app/database/schema.sql`) in the Supabase SQL editor to create the required tables:
-   - `users`
-   - `devices`
-   - `sensor_readings`
-   - `behavioral_features`
-   - `predictions`
-   - `what_if_scenarios`
-   - `future_states`
-3. Copy your project's URL and anon/publishable key into `backend/.env` (see step 1).
-
-Core data flow through the tables:
-```
-sensor_readings → behavioral_features → predictions → future_states
-```
-
----
-
-### 3. AI/ML Setup
-
-The AI/ML scripts live in `backend/app/ai/`.
-
-```bash
-cd backend/app/ai
-pip install supabase --break-system-packages
-```
-
-Set your Supabase credentials as environment variables (PowerShell example — adjust for your shell):
-```powershell
-$env:SUPABASE_URL="https://your-project.supabase.co"
-$env:SUPABASE_KEY="your-supabase-key"
-```
-
-Run the calibration/check script against live sensor data:
-```bash
-python check_real_data.py
-```
-
-This will:
-- Fetch recent `sensor_readings` from the last 15 minutes
-- Extract behavioral features (light/noise stability, motion rate, quiet/activity scores, etc.)
-- Run the scoring model and print the resulting future-state distribution with an explanation
-
-> Note: for meaningful output, make sure a device (real or simulated via Wokwi) is actively streaming sensor data before running the script.
-
----
-
-### 4. Firmware / Hardware Setup
-
-Firmware code lives in `firmware/`.
-
-#### Option A — Simulate on Wokwi (no physical hardware needed)
-1. Open `hardware/simulation/wokwi/diagram.json` on [wokwi.com](https://wokwi.com), or use the Wokwi extension in VS Code.
-2. Build the firmware first (Wokwi needs a compiled `.bin`/`.elf`):
-   ```bash
-   cd firmware
-   arduino-cli lib install "DHT sensor library"
-   arduino-cli lib install "Adafruit Unified Sensor"
-   arduino-cli lib install "ArduinoJson"
-   arduino-cli lib install "Adafruit SSD1306"
-   arduino-cli lib install "Adafruit GFX Library"
-   arduino-cli compile --fqbn esp32:esp32:esp32 --output-dir build firmware.ino
-   ```
-3. Press ▶ Start Simulation in Wokwi. The OLED display will show live sensor readings and transmission status (`Sending...` → `Sent OK`).
-
-#### Option B — Real ESP32 hardware
-1. Wire the components per `hardware/wiring/connections.md` and the schematic in `hardware/schematics/`.
-2. Update `firmware/firmware.ino`'s WiFi credentials (`ssid`, `password`) for your real network instead of the Wokwi virtual network.
-3. Flash via Arduino IDE or `arduino-cli upload`.
-
-**Sensor Data Contract** (JSON payload sent every 5 seconds to the backend):
-```json
-{
-  "device_id": "esp32-sim-001",
-  "timestamp": "2026-08-16T12:00:00Z",
-  "light": 77.7,
-  "temperature": 25.0,
-  "humidity": 50.0,
-  "motion": 1,
-  "noise": 30.0
-}
-```
-
-See `hardware/README.md` for the full pin mapping and `docs/HARDWARE_TECH_REPORT.pdf` for the full technical writeup.
-
----
-
-### 5. Frontend Setup
+### Frontend
 
 ```bash
 cd frontend
 npm install
-```
-
-Create a `.env` file based on `.env.example`:
-```env
-VITE_API_BASE_URL=http://localhost:8000
-# or, to use the live deployed backend:
-# VITE_API_BASE_URL=https://youverse-stag-3.up.railway.app
-```
-
-Run the dev server:
-```bash
 npm run dev
 ```
 
-The app will be available at `http://localhost:5173` (or the port Vite assigns).
+### Hardware
+
+The firmware and hardware simulation are located in:
+
+```text
+firmware/
+hardware/simulation/wokwi/
+```
+
+You can use the Wokwi simulation without physical hardware.
+
+For the complete hardware setup, wiring, PCB files, and firmware instructions, see the corresponding directories in the repository.
 
 ---
 
-## Data Flow
+## 📊 Data Flow
 
+```text
+Sensor Readings
+      ↓
+Behavioral Features
+      ↓
+Model Scoring
+      ↓
+Future States
+      ↓
+What-If Scenario
+      ↓
+Updated Distribution
 ```
-sensor_readings → behavioral_features → predictions → future_states
-```
 
-Raw sensor data, synthetic data, and model output are always kept clearly distinguished in the UI and data model.
+The backend stores the relevant data and provides the API used by the frontend.
 
-## API Reference
+---
 
-| Method | Endpoint | Description |
-|---|---|---|
-| POST | `/api/sensors/ingest` | Submit a sensor reading (used by firmware) |
-| GET | `/api/sensors/latest` | Get the most recent sensor reading |
-| GET | `/api/predictions/{user_id}` | Get current future-state distribution |
-| POST | `/api/what-if` | Submit a hypothetical behavior change and get a recalculated distribution |
+## 🔬 Scientific Honesty
 
-Full interactive documentation: `https://youverse-stag-3.up.railway.app/docs`
+Youverse uses quantum-inspired language and visualization as a conceptual metaphor.
 
-## Team
+It does **not** perform real quantum computing, and the Future Selves shown by the system are not guaranteed predictions.
 
-- **Hardware/Firmware** — ESP32 circuit design (KiCad), sensor integration, firmware (WiFi, HTTPS, OLED display, real-time sensor pipeline)
-- **Backend** — FastAPI, database schema, ingestion + prediction endpoints, deployment
-- **AI/ML** — Feature engineering, behavioral scoring model, What-If recalculation logic, calibration on real device data
-- **Frontend** — React app, Superposition visualization, What-If interaction, 3D scene
+The probabilities displayed by the application are **modeled likelihoods generated by the behavioral simulation system**.
 
-## Current Status
+They should be interpreted as an exploration of possible outcomes under the model's assumptions, not as facts about a person's actual future.
 
-✅ End-to-end pipeline verified live: real sensor data → backend → database → AI scoring, confirmed with live device readings
-✅ Hardware: schematic complete (ERC clean), PCB routed (DRC clean), simulated on Wokwi
-✅ Backend: deployed, tested, sensor ingestion + prediction endpoints live
-✅ AI: feature extraction + scoring model calibrated against real collected sensor data
-⏳ Physical device assembly: planned post-hackathon (currently simulated)
+The system is also not intended to provide medical, psychological, or diagnostic conclusions.
 
-## Scientific Honesty
+---
 
-This project does not claim to predict anyone's actual future, measure focus/productivity/mental health directly, or compute real quantum probabilities. Sensor readings are observable environmental proxies; everything downstream is a modeled, quantum-inspired behavioral simulation, clearly labeled as such throughout the product.
+## 🧪 Current Status
+
+### Implemented
+
+- [x] ESP32 sensor architecture
+- [x] Hardware simulation
+- [x] Behavioral feature extraction
+- [x] Backend API
+- [x] Database integration
+- [x] Future-state modeling
+- [x] What-If simulation
+- [x] Interactive frontend
+- [x] 3D Future Selves visualization
+
+### Current Prototype Note
+
+Youverse is currently a functional prototype that combines an interactive frontend, behavioral simulation, backend services, and a simulated ESP32-based hardware layer.
+
+The current experience demonstrates the complete concept and data flow, while parts of the physical sensing pipeline are simulated rather than continuously collected from a deployed physical device.
+
+The Future Selves and their probabilities are generated by the project's behavioral model. They represent modeled possibilities based on the available inputs and should not be interpreted as predictions of a person's actual future.
+
+The next stage is to connect the physical hardware directly to the live pipeline, allowing real-world environmental and behavioral signals to continuously influence the user's modeled possibility space.
+
+---
+
+## 🌱 Future Vision
+
+Youverse is currently a prototype exploring the relationship between present behavior and possible future states.
+
+In future versions, the system could become a more complete personal reflection platform by combining richer behavioral signals, improved modeling, personalized feedback, and a more capable physical device.
+
+The long-term vision is simple:
+
+> **Make the future feel less like something that happens to you and more like something your present actions can influence.**
+
+---
+
+## 👥 Team
+
+Built by:
+
+- **[Wyyyrdx]** — [Hardware&Firmware engineer]
+- **[Salmansanusisani]** — [Ai/Ml engineer]
+- **[Awaisranahmad]** — [ROLE]
+
+### 🏆 Hackathon
+
+Built for **Reverie Hacks 2026**
+
+[🔗 View our Devpost submission](YOUR_DEVPOST_LINK)
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License.

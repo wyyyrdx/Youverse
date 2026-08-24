@@ -12,7 +12,7 @@ export function getUserId(): string {
     localStorage.setItem(STORAGE_KEY, fresh)
     return fresh
   } catch {
-    // localStorage unavailable (private mode, SSR, etc.) — fall back to a session-only id
+    // localStorage unavailable (private mode, SSR, etc.) - fall back to a session-only id
     return 'demo-session'
   }
 }

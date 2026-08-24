@@ -1,11 +1,14 @@
 import { Link, useLocation } from 'react-router-dom'
 import type { ReactNode } from 'react'
 import Starfield from './Starfield'
+import DottedPlanet from './DottedPlanet'
 
 const NAV = [
   { to: '/', label: 'Universe' },
+  { to: '/present', label: 'Present' },
+  { to: '/what-if', label: 'What If' },
   { to: '/profile', label: 'Profile' },
-  { to: '/achievements', label: 'Achievements' },
+  { to: '/discoveries', label: 'Discoveries' },
 ]
 
 export default function Layout({ children }: { children: ReactNode }) {
@@ -14,30 +17,31 @@ export default function Layout({ children }: { children: ReactNode }) {
   return (
     <div className="relative min-h-screen bg-void text-mist font-body">
       <Starfield />
+      <DottedPlanet />
 
-      <header className="fixed top-4 md:top-6 left-1/2 z-40 w-[94%] md:w-auto -translate-x-1/2">
-        <div className="flex items-center justify-between gap-6 md:gap-10 rounded-full border border-white/10 bg-void-panel/60 backdrop-blur-xl px-4 md:px-6 py-2.5 shadow-[0_0_30px_rgba(0,0,0,0.4)]">
-          <Link to="/" className="flex items-center gap-2 group shrink-0">
-            <span
-              className="h-3 w-3 rounded-full bg-gradient-to-br from-magenta to-cyan shadow-glowMagenta group-hover:animate-drift"
-              aria-hidden
+      <header className="fixed top-0 left-0 right-0 z-50 border-b border-white/[0.06] bg-void/80 backdrop-blur-md">
+        <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-5 md:px-8">
+          <Link to="/" className="flex items-center shrink-0">
+            <img
+              src="/youverse-logo.png"
+              alt="Youverse"
+              className="h-6 md:h-7 w-auto object-contain"
             />
-            <span className="font-display text-xs md:text-sm tracking-[0.35em] text-mist">
-              YOUVERSE
-            </span>
           </Link>
 
-          <nav className="flex items-center gap-1 text-xs md:text-sm font-mono">
+          <nav className="hidden md:flex items-center gap-1">
             {NAV.map((item) => {
-              const active = location.pathname === item.to
+              const active =
+                location.pathname === item.to ||
+                (item.to !== '/' && location.pathname.startsWith(item.to))
               return (
                 <Link
                   key={item.to}
                   to={item.to}
-                  className={`px-3 md:px-4 py-1.5 rounded-full tracking-wide transition-colors duration-300 ${
+                  className={`px-3 py-1.5 text-sm transition-colors duration-200 ${
                     active
-                      ? 'text-void bg-mist'
-                      : 'text-mist-muted hover:text-mist hover:bg-white/5'
+                      ? 'text-mist border-b border-magenta'
+                      : 'text-mist-muted hover:text-mist'
                   }`}
                 >
                   {item.label}
@@ -45,12 +49,38 @@ export default function Layout({ children }: { children: ReactNode }) {
               )
             })}
           </nav>
+
+          <div className="flex items-center gap-2">
+            <Link
+              to="/what-if"
+              className="hidden sm:inline-flex items-center rounded-md border border-white/15 px-3.5 py-1.5 text-xs font-mono text-mist hover:bg-white/5 transition-colors"
+            >
+              Run What-If
+            </Link>
+            {/* mobile nav */}
+            <nav className="flex md:hidden items-center gap-0.5 overflow-x-auto max-w-[55vw]">
+              {NAV.map((item) => {
+                const active = location.pathname === item.to
+                return (
+                  <Link
+                    key={item.to}
+                    to={item.to}
+                    className={`px-2 py-1 text-[11px] whitespace-nowrap ${
+                      active ? 'text-mist' : 'text-mist-muted'
+                    }`}
+                  >
+                    {item.label}
+                  </Link>
+                )
+              })}
+            </nav>
+          </div>
         </div>
       </header>
 
       <main className="relative z-10">{children}</main>
 
-      <footer className="relative z-10 border-t border-white/5 py-8 px-6 md:px-10 text-center text-xs text-mist-faint font-mono">
+      <footer className="relative z-10 border-t border-white/[0.06] py-8 px-5 md:px-8 text-center text-[11px] text-mist-faint font-mono">
         Youverse is a hackathon project. Future selves are modeled likelihoods from behavioral
         signals, not predictions or measurements of your mental state.
       </footer>

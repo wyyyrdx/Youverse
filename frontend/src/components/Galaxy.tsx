@@ -1,95 +1,121 @@
 import { useState } from 'react'
-import Badge from './Badge'
+import { useNavigate } from 'react-router-dom'
 import { usePredictions } from '../hooks/usePredictions'
+import type { FutureSelf } from '../types'
 
 export default function Galaxy() {
   const { futureSelves, connection, isSimulated } = usePredictions()
   const [activeId, setActiveId] = useState<string | null>(null)
+  const navigate = useNavigate()
   const active = futureSelves.find((f) => f.id === activeId) ?? null
 
+  const goToSelf = (f: FutureSelf) => {
+    setActiveId(f.id)
+    window.setTimeout(() => navigate(`/self/${f.id}`), 380)
+  }
+
   return (
-    <section id="galaxy" className="relative px-6 py-28 md:py-36">
-      <div className="mx-auto max-w-3xl text-center mb-16">
-        <Badge>THE SUPERPOSITION</Badge>
-        <h2 className="mt-4 font-display text-3xl md:text-5xl font-bold text-mist">
-          A tiny universe, orbiting who you might become
+    <section id="universe" className="relative px-4 md:px-6 py-24 md:py-32">
+      <div className="atmosphere-glow opacity-40" aria-hidden />
+
+      <div className="mx-auto max-w-6xl text-left mb-14 px-1">
+        <p className="font-mono text-[10px] tracking-[0.3em] text-mist-faint mb-3">THE SUPERPOSITION</p>
+        <h2 className="font-display text-2xl md:text-4xl font-bold text-mist">
+          A living map of possible selves
         </h2>
-        <p className="mt-4 text-sm md:text-base text-mist-muted leading-relaxed">
-          The glowing core is your present state. Each orbiting self is a possible future, modeled
-          from what your environment is telling us right now. Hover or tap one to look closer.
+        <p className="mt-4 text-sm md:text-base text-mist-muted leading-relaxed max-w-xl">
+          The core is your present. Each orbiting body is a modeled future self. Hover to inspect.
+          Click to enter that region of the possibility space.
         </p>
-        <div className="mt-4 flex justify-center">
-          <span className="inline-flex items-center gap-2 font-mono text-[10px] tracking-[0.2em] text-mist-faint">
+        <div className="mt-4 flex justify-start">
+          <span className="inline-flex items-center gap-2 font-mono text-[10px] text-mist-faint">
             <span
               className={`h-1.5 w-1.5 rounded-full ${
-                connection === 'live' ? 'bg-cyan animate-twinkle' : 'bg-mist-faint'
+                connection === 'live' ? 'bg-cyan animate-glowPulse' : 'bg-mist-faint'
               }`}
             />
-            {connection === 'loading' && 'CONNECTING TO YOUVERSE…'}
-            {connection === 'live' && (isSimulated ? 'LIVE · SIMULATED DATA' : 'LIVE · REAL SENSOR DATA')}
-            {connection === 'offline' && 'OFFLINE · SHOWING SAMPLE DATA'}
+            {connection === 'loading' && 'Connecting…'}
+            {connection === 'live' && (isSimulated ? 'Live · simulated data' : 'Live · real sensor data')}
+            {connection === 'offline' && 'Offline · sample data'}
           </span>
         </div>
       </div>
 
-      <div className="relative mx-auto flex h-[560px] md:h-[820px] max-w-full items-center justify-center">
+      <div className="relative mx-auto flex h-[520px] md:h-[760px] max-w-full items-center justify-center">
         {/* orbit rings */}
         {futureSelves.map((f) => (
           <div
             key={`ring-${f.id}`}
-            className="absolute rounded-full border border-white/[0.06]"
+            className="absolute rounded-full border border-white/[0.05]"
             style={{
-              width: `calc(2 * clamp(46px, ${(f.orbitRadius / 420) * 34}vw, ${f.orbitRadius}px))`,
-              height: `calc(2 * clamp(46px, ${(f.orbitRadius / 420) * 34}vw, ${f.orbitRadius}px))`,
+              width: `calc(2 * clamp(48px, ${(f.orbitRadius / 420) * 34}vw, ${f.orbitRadius}px))`,
+              height: `calc(2 * clamp(48px, ${(f.orbitRadius / 420) * 34}vw, ${f.orbitRadius}px))`,
             }}
             aria-hidden
           />
         ))}
 
-        {/* core = present self */}
-        <div className="absolute z-20 flex flex-col items-center justify-center">
-          <div className="h-16 w-16 md:h-20 md:w-20 rounded-full bg-gradient-to-br from-mist via-cyan to-magenta shadow-glowCyan animate-drift" />
-          <span className="mt-3 font-mono text-[10px] md:text-xs tracking-[0.25em] text-mist-muted">
-            PRESENT YOU
+        {/* Present core */}
+        <button
+          onClick={() => navigate('/present')}
+          className="absolute z-20 flex flex-col items-center justify-center group focus:outline-none"
+          aria-label="Your Present"
+        >
+          <div
+            className="h-16 w-16 md:h-[4.5rem] md:w-[4.5rem] rounded-full transition-transform duration-500 group-hover:scale-110 animate-floatY"
+            style={{
+              background: 'radial-gradient(circle at 32% 28%, #fff, #2fe4ff 38%, #e63cff 85%)',
+              boxShadow: '0 0 40px 8px rgba(47, 228, 255, 0.35), 0 0 80px 16px rgba(230, 60, 255, 0.2)',
+            }}
+          />
+          <span className="mt-3 font-mono text-[10px] tracking-wide text-mist-muted group-hover:text-mist transition-colors">
+            Your Present
           </span>
-        </div>
+        </button>
 
         {/* orbiting future selves */}
         {futureSelves.map((f) => (
           <div
             key={f.id}
-            className="absolute inset-0 flex items-center justify-center"
+            className="absolute inset-0 flex items-center justify-center pointer-events-none"
             style={{
-              animation: `spin ${f.orbitDuration}s linear infinite`,
+              animation: `orbitSpin ${f.orbitDuration}s linear infinite`,
               animationDelay: `-${(f.orbitOffset / 360) * f.orbitDuration}s`,
             }}
           >
             <div
+              className="pointer-events-auto"
               style={{
-                transform: `translateX(clamp(46px, ${(f.orbitRadius / 420) * 34}vw, ${f.orbitRadius}px))`,
+                transform: `translateX(clamp(48px, ${(f.orbitRadius / 420) * 34}vw, ${f.orbitRadius}px))`,
               }}
             >
               <button
                 onMouseEnter={() => setActiveId(f.id)}
                 onFocus={() => setActiveId(f.id)}
-                onClick={() => setActiveId(f.id)}
+                onClick={() => goToSelf(f)}
                 style={{
-                  animation: `spin-reverse ${f.orbitDuration}s linear infinite`,
+                  animation: `orbitSpinRev ${f.orbitDuration}s linear infinite`,
                   animationDelay: `-${(f.orbitOffset / 360) * f.orbitDuration}s`,
                 }}
                 className="group relative flex flex-col items-center focus:outline-none"
                 aria-label={`${f.name}, ${f.score} percent`}
               >
                 <span
-                  className="block h-8 w-8 md:h-10 md:w-10 rounded-full transition-transform duration-300 group-hover:scale-125"
+                  className="block h-8 w-8 md:h-10 md:w-10 rounded-full transition-all duration-400 group-hover:scale-125"
                   style={{
                     background: `radial-gradient(circle at 35% 30%, #fff, ${f.color})`,
-                    boxShadow: `0 0 22px 4px ${f.glow}`,
+                    boxShadow:
+                      activeId === f.id
+                        ? `0 0 28px 6px ${f.glow}`
+                        : `0 0 16px 3px ${f.glow}`,
                   }}
                 />
                 <span
-                  className="mt-2 whitespace-nowrap font-mono text-[9px] md:text-[10px] tracking-wide transition-opacity duration-300"
-                  style={{ color: f.color, opacity: activeId === f.id ? 1 : 0.55 }}
+                  className="mt-2 whitespace-nowrap font-mono text-[9px] md:text-[10px] transition-all duration-300"
+                  style={{
+                    color: f.color,
+                    opacity: activeId === f.id ? 1 : 0.45,
+                  }}
                 >
                   {f.name} · {f.score}%
                 </span>
@@ -99,48 +125,53 @@ export default function Galaxy() {
         ))}
       </div>
 
-      {/* floating detail panel */}
+      {/* detail panel */}
       <div
-        className={`mx-auto mt-10 max-w-md rounded-2xl border border-white/10 bg-void-panel/70 backdrop-blur-md px-6 py-5 text-left transition-all duration-300 will-change-transform ${
-          active ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-3 pointer-events-none'
+        className={`mx-auto mt-8 max-w-md glass rounded-[20px] px-5 py-4 text-left transition-all duration-500 ${
+          active ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none'
         }`}
-        style={{ boxShadow: active ? `0 0 40px ${active.glow}` : undefined }}
         role="status"
         aria-live="polite"
       >
         {active && (
           <>
-            <div className="flex items-center justify-between">
-              <h3 className="font-display text-lg tracking-wide" style={{ color: active.color }}>
+            <div className="flex items-center justify-between gap-3">
+              <h3 className="font-display text-base" style={{ color: active.color }}>
                 {active.name}
               </h3>
               <span className="font-mono text-sm text-mist-muted">{active.score}%</span>
             </div>
             <p className="mt-2 text-sm text-mist-muted leading-relaxed">{active.description}</p>
-            <div className="mt-3 flex flex-wrap gap-2">
+            <div className="mt-3 flex flex-wrap gap-1.5">
               {active.signals.map((s) => (
                 <span
                   key={s}
-                  className="rounded-full border border-white/10 px-2 py-0.5 font-mono text-[10px] uppercase tracking-wide text-mist-faint"
+                  className="border border-white/10 px-2 py-0.5 font-mono text-[10px] text-mist-faint rounded-full"
                 >
                   {s}
                 </span>
               ))}
             </div>
+            <button
+              onClick={() => goToSelf(active)}
+              className="mt-4 text-xs font-mono text-cyan hover:text-mist transition-colors"
+            >
+              Enter this region →
+            </button>
           </>
         )}
       </div>
 
       <p className="mx-auto mt-6 max-w-md text-center text-[11px] text-mist-faint font-mono">
-        Modeled likelihoods from behavioral signals — not a measurement or a guarantee.
+        Modeled likelihoods from behavioral signals. Not a measurement or a guarantee.
       </p>
 
       <style>{`
-        @keyframes spin {
+        @keyframes orbitSpin {
           from { transform: rotate(0deg); }
           to { transform: rotate(360deg); }
         }
-        @keyframes spin-reverse {
+        @keyframes orbitSpinRev {
           from { transform: rotate(0deg); }
           to { transform: rotate(-360deg); }
         }
