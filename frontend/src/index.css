@@ -2,26 +2,52 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer base {
-  body {
-    @apply bg-cosmic-dark text-white min-h-screen;
-  }
-  ::-webkit-scrollbar {
-    width: 6px;
-  }
-  ::-webkit-scrollbar-track {
-    @apply bg-cosmic-dark;
-  }
-  ::-webkit-scrollbar-thumb {
-    @apply bg-quantum-purple rounded-full;
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: #030308;
+  overflow-x: hidden;
+}
+
+::selection {
+  background: rgba(230, 60, 255, 0.35);
+  color: #fff;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: #030308;
+}
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #8a2ea3, #1a7f8f);
+  border-radius: 8px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
   }
 }
 
-@layer utilities {
-  .glow-purple {
-    box-shadow: 0 0 30px -5px rgba(139, 92, 246, 0.3);
-  }
-  .text-gradient {
-    @apply bg-gradient-to-r from-quantum-purple to-quantum-pink bg-clip-text text-transparent;
-  }
+/* focus visibility */
+a:focus-visible,
+button:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid #2fe4ff;
+  outline-offset: 3px;
+  border-radius: 4px;
 }

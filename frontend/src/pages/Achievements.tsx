@@ -1,152 +1,64 @@
-import { useState } from 'react';
+import Badge from '../components/Badge'
 
-const Achievements = () => {
-  const allAchievements = [
-    { 
-      id: 1, 
-      name: 'Universe Explorer', 
-      description: 'Completed your first superposition',
-      emoji: '🌌',
-      unlocked: true,
-      rarity: 'common',
-    },
-    { 
-      id: 2, 
-      name: 'Quantum Curious', 
-      description: 'Asked 5 What-If questions',
-      emoji: '🧠',
-      unlocked: true,
-      rarity: 'uncommon',
-    },
-    { 
-      id: 3, 
-      name: 'Orbit Master', 
-      description: 'Viewed 10 future states',
-      emoji: '⭐',
-      unlocked: true,
-      rarity: 'rare',
-    },
-    { 
-      id: 4, 
-      name: 'Professional Overthinker', 
-      description: 'Spent 30 minutes in superposition',
-      emoji: '🤔',
-      unlocked: false,
-      rarity: 'epic',
-    },
-    { 
-      id: 5, 
-      name: 'Brain in Superposition', 
-      description: 'Had 5 future states active simultaneously',
-      emoji: '🧬',
-      unlocked: false,
-      rarity: 'legendary',
-    },
-    { 
-      id: 6, 
-      name: 'Escape Velocity', 
-      description: 'Changed your future 10 times',
-      emoji: '🚀',
-      unlocked: false,
-      rarity: 'mythic',
-    },
-  ];
+interface BadgeItem {
+  name: string
+  description: string
+  unlocked: boolean
+  color: string
+}
 
-  const [showOnlyUnlocked, setShowOnlyUnlocked] = useState(false);
-  
-  const displayedAchievements = showOnlyUnlocked 
-    ? allAchievements.filter(a => a.unlocked)
-    : allAchievements;
+// Mock unlock state — in production this comes from the backend once
+// achievement tracking exists server-side.
+const BADGES: BadgeItem[] = [
+  { name: 'Tiny Universe Explorer', description: 'Opened your galaxy for the first time.', unlocked: true, color: '#2fe4ff' },
+  { name: 'Quantum Curious', description: 'Ran your first What-If simulation.', unlocked: true, color: '#e63cff' },
+  { name: 'Orbit Master', description: 'Viewed all five future selves in one session.', unlocked: false, color: '#7bffb0' },
+  { name: 'Professional Overthinker', description: 'Ran five What-If simulations in a day.', unlocked: false, color: '#ffd166' },
+  { name: 'Brain in Superposition', description: 'Kept two future selves within 2% of each other.', unlocked: false, color: '#e63cff' },
+  { name: 'Escape Velocity', description: 'Moved a future self by more than 20 points.', unlocked: false, color: '#2fe4ff' },
+  { name: 'Probability Wizard', description: 'Checked your futures seven days in a row.', unlocked: false, color: '#ff6b6b' },
+]
 
-  const unlockedCount = allAchievements.filter(a => a.unlocked).length;
-  const totalCount = allAchievements.length;
-  const progress = Math.round((unlockedCount / totalCount) * 100);
-
-  const rarityColors = {
-    common: 'text-white/60',
-    uncommon: 'text-quantum-blue',
-    rare: 'text-quantum-purple',
-    epic: 'text-quantum-pink',
-    legendary: 'text-yellow-400',
-    mythic: 'text-red-400',
-  };
-
+export default function Achievements() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-cosmic-dark via-cosmic-purple to-[#1a0a2e]">
-      <div className="container mx-auto px-4 py-8 max-w-3xl">
-        
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gradient mb-2">🏆 Achievements</h1>
-          <p className="text-white/60">
-            {unlockedCount} / {totalCount} unlocked
-          </p>
-          <div className="max-w-xs mx-auto mt-3 h-2 bg-white/10 rounded-full overflow-hidden">
-            <div 
-              className="h-full bg-gradient-to-r from-quantum-purple to-quantum-pink rounded-full transition-all duration-700"
-              style={{ width: `${progress}%` }}
-            />
-          </div>
-        </div>
+    <section className="min-h-screen px-6 pt-32 pb-24 max-w-3xl mx-auto">
+      <Badge>ACHIEVEMENTS</Badge>
+      <h1 className="mt-4 font-display text-3xl md:text-4xl font-bold text-mist">
+        Marks left in your universe
+      </h1>
+      <p className="mt-3 text-sm text-mist-muted max-w-md">
+        Small proof that you showed up, explored, and changed something.
+      </p>
 
-        <div className="flex justify-center mb-6">
-          <button
-            onClick={() => setShowOnlyUnlocked(!showOnlyUnlocked)}
-            className={`
-              px-4 py-2 rounded-lg text-sm transition-all
-              ${showOnlyUnlocked 
-                ? 'bg-quantum-purple/20 text-quantum-purple border border-quantum-purple/30' 
-                : 'bg-white/5 text-white/60 border border-white/10 hover:bg-white/10'
-              }
-            `}
+      <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 gap-5">
+        {BADGES.map((b) => (
+          <div
+            key={b.name}
+            className={`rounded-2xl border px-5 py-5 transition-all duration-300 ${
+              b.unlocked
+                ? 'border-white/15 bg-void-panel/60'
+                : 'border-white/5 bg-void-panel/25 opacity-50'
+            }`}
+            style={b.unlocked ? { boxShadow: `0 0 30px ${b.color}22` } : undefined}
           >
-            {showOnlyUnlocked ? '✨ Show All' : '🔒 Show Unlocked Only'}
-          </button>
-        </div>
-
-        <div className="space-y-3">
-          {displayedAchievements.map((achievement) => (
-            <div
-              key={achievement.id}
-              className={`
-                bg-white/5 backdrop-blur-sm rounded-xl p-4 border transition-all
-                ${achievement.unlocked 
-                  ? 'border-white/10 hover:border-white/20 hover:bg-white/10' 
-                  : 'border-white/5 opacity-50'
-                }
-              `}
-            >
-              <div className="flex items-center gap-4">
-                <span className="text-3xl">{achievement.emoji}</span>
-                <div className="flex-1">
-                  <div className="flex items-center gap-2">
-                    <h3 className="font-semibold text-white">{achievement.name}</h3>
-                    <span className={`text-xs ${rarityColors[achievement.rarity as keyof typeof rarityColors]}`}>
-                      {achievement.rarity}
-                    </span>
-                  </div>
-                  <p className="text-sm text-white/40">{achievement.description}</p>
-                </div>
-                <div>
-                  {achievement.unlocked ? (
-                    <span className="text-green-400 text-xl">✅</span>
-                  ) : (
-                    <span className="text-white/20 text-xl">🔒</span>
-                  )}
-                </div>
-              </div>
+            <div className="flex items-center gap-3">
+              <span
+                className="h-8 w-8 rounded-full shrink-0"
+                style={{
+                  background: b.unlocked
+                    ? `radial-gradient(circle at 35% 30%, #fff, ${b.color})`
+                    : 'rgba(255,255,255,0.08)',
+                }}
+              />
+              <h3 className="font-display text-sm tracking-wide text-mist">{b.name}</h3>
             </div>
-          ))}
-        </div>
-
-        {displayedAchievements.length === 0 && (
-          <div className="text-center py-12 text-white/40">
-            <p className="text-4xl mb-3">🌠</p>
-            <p>No achievements yet. Keep exploring!</p>
+            <p className="mt-3 text-xs leading-relaxed text-mist-muted">{b.description}</p>
+            <span className="mt-3 inline-block font-mono text-[10px] tracking-wide text-mist-faint">
+              {b.unlocked ? 'UNLOCKED' : 'LOCKED'}
+            </span>
           </div>
-        )}
+        ))}
       </div>
-    </div>
-  );
-};
-
-export default Achievements;
+    </section>
+  )
+}

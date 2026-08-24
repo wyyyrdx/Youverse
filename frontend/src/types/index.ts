@@ -1,36 +1,19 @@
-export interface FutureState {
-  name: string;
-  score: number;
-  emoji?: string;
-  color?: string;
-  description?: string;
+export interface FutureSelf {
+  id: string
+  name: string
+  score: number // 0-100, modeled likelihood, not a real probability
+  color: string // hex, used for glow + orbit accent
+  glow: string // tailwind-friendly rgba for box-shadow
+  orbitRadius: number // px, distance from center on desktop
+  orbitDuration: number // seconds for one full revolution
+  orbitOffset: number // deg, starting angle
+  description: string
+  signals: string[] // which observable signals feed this future self
 }
 
-export interface SensorData {
-  deviceId: string;
-  timestamp: string;
-  light: number;
-  temperature: number;
-  humidity: number;
-  motion: number;
-  noise: number;
+export interface WhatIfResult {
+  narrative: string
+  updated: { id: string; score: number }[]
 }
 
-export interface WhatIfInput {
-  baseScenarioId: string;
-  changedFeature: string;
-  newValue: number;
-}
-
-export interface WhatIfResponse {
-  scenarios: FutureState[];
-  message?: string;
-}
-
-export interface ApiResponse<T> {
-  data: T;
-  status: number;
-  message?: string;
-}
-
-export type LoadingState = 'idle' | 'loading' | 'success' | 'error';
+export type SensorSignal = 'light' | 'temperature' | 'humidity' | 'motion' | 'noise'
