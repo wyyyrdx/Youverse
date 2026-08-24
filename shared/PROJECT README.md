@@ -1,8 +1,8 @@
-# 🌌 Youverse
+# SUPERPOSITION YOU
 
 > "You are here. Your habits shape the possibilities. Your future isn't one state — it's a superposition of possibilities."
 
-A quantum-inspired behavioral modeling system. A physical ESP32 device collects environmental/behavioral signals, transforms them into features, and a lightweight AI model generates modeled likelihoods for several possible future selves visualized as an interactive "superposition" the user can collapse by changing a habit.
+A quantum-inspired behavioral modeling system. A physical ESP32 device collects environmental/behavioral signals, transforms them into features, and a lightweight AI model generates modeled likelihoods for several possible future selves — visualized as an interactive "superposition" the user can collapse by changing a habit.
 
 **These are not real quantum probabilities.** The quantum concept is a metaphor; the underlying system is a behavioral modeling and simulation system. All probabilities are modeled/simulated likelihoods, not predictions of an actual future.
 
@@ -270,6 +270,7 @@ Full interactive documentation: `https://youverse-stag-3.up.railway.app/docs`
 ✅ Hardware: schematic complete (ERC clean), PCB routed (DRC clean), simulated on Wokwi
 ✅ Backend: deployed, tested, sensor ingestion + prediction endpoints live
 ✅ AI: feature extraction + scoring model calibrated against real collected sensor data
+⏳ Frontend: in integration
 ⏳ Physical device assembly: planned post-hackathon (currently simulated)
 
 ## Scientific Honesty
