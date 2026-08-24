@@ -365,13 +365,13 @@ Built by:
 
 - **[Wyyyrdx]** — [Hardware&Firmware engineer]
 - **[Salmansanusisani]** — [Ai/Ml engineer]
-- **[Awaisranahmad]** — [ROLE]
+- **[Awaisranahmad]** — [Backend engineer]
 
 ### 🏆 Hackathon
 
 Built for **Reverie Hacks 2026**
 
-[🔗 View our Devpost submission](YOUR_DEVPOST_LINK)
+[🔗 View our Devpost submission](https://devpost.com/software/youverse?ref_content=my-projects-tab&ref_feature=my_projects)
 
 ---
 
