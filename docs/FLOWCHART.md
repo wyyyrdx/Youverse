@@ -1,4 +1,4 @@
-# Firmware Flowchart — SUPERPOSITION YOU
+# Firmware Flowchart - Youverse
 
 ```mermaid
 flowchart TD
