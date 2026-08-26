@@ -8,7 +8,7 @@ Youverse is a behavioral simulation platform that explores how your current habi
 
 Instead of telling you what your future will be, Youverse helps you understand how your **current state can shape future possibilities**.
 
-[🎥 Watch the Demo](YOUR_DEMO_VIDEO_LINK)
+[🎥 Watch the Demo](https://youtu.be/ZdHFRG2crXw?si=tzGFYWxcKCb7MCAu)
 
 ---
 
