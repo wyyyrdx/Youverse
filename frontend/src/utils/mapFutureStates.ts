@@ -1,21 +1,39 @@
 import { futureSelves } from '../data/futureSelves'
-import type { FutureSelf } from '../types'
-import type { PredictionEntry } from '../services/api'
+import type { FutureSelf, PredictionEntry } from '../types'
 
-// Backend sends future_state as a name string (e.g. "Focused You"). This maps that
-// string to the local visual/design metadata (color, orbit radius, description) that
-// isn't part of the API contract. Matching is tolerant of minor naming differences.
 function normalize(s: string): string {
-  return s.toLowerCase().replace(/[^a-z]/g, '')
+  return s.toLowerCase().replace(/[^a-z0-9]/g, '')
 }
 
 export function mergeWithLiveScores(live: PredictionEntry[]): FutureSelf[] {
+  if (!live || !Array.isArray(live) || live.length === 0) {
+    return futureSelves
+  }
+
   return futureSelves.map((local) => {
     const localKey = normalize(local.name)
+    const localId = normalize(local.id)
+
     const match = live.find((entry) => {
-      const key = normalize(entry.future_state)
-      return key === localKey || key.includes(normalize(local.id)) || localKey.includes(key)
+      const liveKey = normalize(entry.future_state)
+      return (
+        liveKey === localKey ||
+        liveKey.includes(localId) ||
+        localKey.includes(liveKey) ||
+        (localId === 'burnedout' && liveKey.includes('burn')) ||
+        (localId === 'consistent' && liveKey.includes('consist')) ||
+        (localId === 'creative' && liveKey.includes('creat')) ||
+        (localId === 'focused' && liveKey.includes('focus')) ||
+        (localId === 'active' && liveKey.includes('activ'))
+      )
     })
-    return match ? { ...local, score: match.score } : local
+
+    if (match) {
+      return {
+        ...local,
+        score: typeof match.score === 'number' ? Math.round(match.score) : local.score,
+      }
+    }
+    return local
   })
 }

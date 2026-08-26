@@ -1,125 +1,144 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
+import { Copy, Check, Sparkles } from 'lucide-react'
 import { usePredictions } from '../hooks/usePredictions'
 import { getUserId } from '../utils/userId'
+import MiniPlanet3D from '../components/3d/MiniPlanet3D'
+import Badge from '../components/Badge'
 
 export default function Profile() {
-  const { futureSelves, connection } = usePredictions()
-  const [name, setName] = useState('')
-  const userId = getUserId()
-  const top = [...futureSelves].sort((a, b) => b.score - a.score).slice(0, 3)
+  const { futureSelves, lastCalculated } = usePredictions()
+  const [alias, setAlias] = useState(() => localStorage.getItem('youverse_alias') || '')
+  const [currentId] = useState(getUserId())
+  const [copied, setCopied] = useState(false)
+
+  const handleCopyId = () => {
+    navigator.clipboard.writeText(currentId)
+    setCopied(true)
+    setTimeout(() => setCopied(false), 2000)
+  }
+
+  const handleSaveAlias = (val: string) => {
+    setAlias(val)
+    localStorage.setItem('youverse_alias', val)
+  }
 
   return (
-    <section className="relative min-h-screen px-4 md:px-6 pt-28 pb-24 max-w-3xl mx-auto">
-      <div className="atmosphere-glow opacity-20" aria-hidden />
+    <section className="relative min-h-screen px-4 sm:px-6 lg:px-8 pt-28 pb-24 max-w-4xl mx-auto">
+      {/* Header */}
+      <div className="text-left mb-8">
+        <Badge color="cyan">OBSERVATORY METRICS</Badge>
+        <h1 className="mt-2 font-display text-3xl sm:text-4xl md:text-5xl font-extrabold text-mist tracking-tight">
+          Personal Observatory
+        </h1>
+        <p className="mt-2 text-sm sm:text-base text-mist-muted leading-relaxed">
+          Your session identity, active state distribution, and trajectory telemetry.
+        </p>
+      </div>
 
-      <p className="font-mono text-[10px] tracking-[0.3em] text-mist-faint">OBSERVATORY</p>
-      <h1 className="mt-3 font-display text-3xl md:text-4xl font-bold text-mist">Your Universe</h1>
-      <p className="mt-2 text-sm text-mist-muted">
-        A personal view of your modeled state. Not a social profile.
-      </p>
+      {/* Identity Card */}
+      <div className="glass-card rounded-3xl p-6 sm:p-8 border border-white/10 mb-8 grid grid-cols-1 sm:grid-cols-12 gap-6 items-center">
+        <div className="sm:col-span-4 flex flex-col items-center justify-center">
+          <MiniPlanet3D color="#2fe4ff" glowColor="#e63cff" className="w-28 h-28" />
+          <p className="mt-2 font-mono text-xs text-mist font-medium">
+            {alias || 'Cosmic Traveler'}
+          </p>
+        </div>
 
-      {/* orbital mini viz */}
-      <div className="mt-12 relative mx-auto h-56 flex items-center justify-center">
-        <div
-          className="h-16 w-16 rounded-full animate-floatY z-10"
-          style={{
-            background: 'radial-gradient(circle at 32% 28%, #fff, #2fe4ff 45%, #e63cff)',
-            boxShadow: '0 0 36px 8px rgba(47, 228, 255, 0.3)',
-          }}
-        />
-        {top.map((f, i) => {
-          const angle = (i / top.length) * 360
-          const r = 90 + i * 12
-          return (
-            <div
-              key={f.id}
-              className="absolute h-6 w-6 rounded-full"
-              style={{
-                background: `radial-gradient(circle at 35% 30%, #fff, ${f.color})`,
-                boxShadow: `0 0 12px ${f.glow}`,
-                transform: `rotate(${angle}deg) translateX(${r}px) rotate(-${angle}deg)`,
-              }}
-              title={f.name}
+        <div className="sm:col-span-8 space-y-4 text-left">
+          <div>
+            <label className="font-mono text-xs text-mist-muted block mb-1.5">
+              Explorer Display Alias
+            </label>
+            <input
+              type="text"
+              value={alias}
+              onChange={(e) => handleSaveAlias(e.target.value)}
+              placeholder="e.g. Architect of Tomorrow"
+              className="w-full rounded-xl border border-white/15 bg-black/40 px-3.5 py-2 text-sm text-mist placeholder:text-mist-faint focus:border-cyan focus:outline-none"
             />
-          )
-        })}
-        <div className="absolute inset-8 rounded-full border border-white/5" aria-hidden />
-        <div className="absolute inset-0 rounded-full border border-white/[0.03]" aria-hidden />
-      </div>
+          </div>
 
-      <div className="mt-4 text-center">
-        <p className="font-mono text-xs text-mist-muted">
-          Session id · {userId.slice(0, 18)}…
-        </p>
-        <p className="font-mono text-[10px] text-mist-faint mt-1">
-          {connection === 'live' ? 'Connected' : 'Offline sample'}
-        </p>
-      </div>
-
-      {/* name */}
-      <div className="mt-12 glass rounded-[20px] p-5">
-        <label className="block font-mono text-xs text-mist-muted mb-2">Display name</label>
-        <input
-          type="text"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          placeholder="Optional"
-          className="w-full rounded-[12px] border border-white/10 bg-black/25 px-3 py-2.5 text-sm text-mist placeholder:text-mist-faint focus:border-cyan/40 focus:outline-none"
-        />
-      </div>
-
-      {/* distribution */}
-      <div className="mt-6 glass rounded-[20px] p-5">
-        <h2 className="font-mono text-xs text-cyan mb-4">Future Self distribution</h2>
-        <div className="space-y-2.5">
-          {[...futureSelves]
-            .sort((a, b) => b.score - a.score)
-            .map((f) => (
-              <Link
-                key={f.id}
-                to={`/self/${f.id}`}
-                className="flex items-center gap-3 group"
+          <div>
+            <label className="font-mono text-xs text-mist-muted block mb-1.5">
+              Unique Session ID (FastAPI User ID)
+            </label>
+            <div className="flex items-center gap-2">
+              <input
+                type="text"
+                value={currentId}
+                readOnly
+                className="w-full rounded-xl border border-white/10 bg-black/60 px-3.5 py-2 font-mono text-xs text-mist-muted select-all"
+              />
+              <button
+                onClick={handleCopyId}
+                className="p-2.5 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 text-mist-muted hover:text-mist transition-colors shrink-0"
+                title="Copy Session ID"
               >
-                <span
-                  className="h-2.5 w-2.5 rounded-full shrink-0"
-                  style={{ background: f.color, boxShadow: `0 0 8px ${f.glow}` }}
-                />
-                <span className="w-28 font-mono text-xs text-mist-muted group-hover:text-mist transition-colors">
-                  {f.name}
-                </span>
-                <div className="h-1.5 flex-1 rounded-full bg-white/5 overflow-hidden">
-                  <div
-                    className="h-full rounded-full"
-                    style={{ width: `${f.score}%`, background: f.color }}
+                {copied ? <Check className="w-4 h-4 text-mint" /> : <Copy className="w-4 h-4" />}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Distribution Summary Table */}
+      <div className="glass-card rounded-3xl p-6 sm:p-8 border border-white/10 mb-8">
+        <div className="flex items-center justify-between pb-4 mb-4 border-b border-white/10">
+          <h3 className="font-display text-base font-bold text-mist">
+            Current Possibility Space Allocation
+          </h3>
+          <span className="font-mono text-xs text-mist-faint">
+            {lastCalculated ? `Last synced: ${new Date(lastCalculated).toLocaleTimeString()}` : 'Real-time'}
+          </span>
+        </div>
+
+        <div className="space-y-3.5">
+          {futureSelves
+            .slice()
+            .sort((a, b) => b.score - a.score)
+            .map((self) => (
+              <Link
+                key={self.id}
+                to={`/self/${self.id}`}
+                className="flex items-center justify-between p-3 rounded-2xl bg-void/50 hover:bg-white/5 border border-white/5 hover:border-white/15 transition-all group"
+              >
+                <div className="flex items-center gap-3">
+                  <span
+                    className="w-3 h-3 rounded-full shrink-0"
+                    style={{
+                      backgroundColor: self.color,
+                      boxShadow: `0 0 8px ${self.glow}`,
+                    }}
                   />
+                  <div>
+                    <span className="font-display text-sm font-semibold text-mist group-hover:text-white">
+                      {self.name}
+                    </span>
+                    <span className="block font-mono text-[10px] text-mist-faint">
+                      {self.signals.join(' · ')}
+                    </span>
+                  </div>
                 </div>
-                <span className="w-9 text-right font-mono text-xs" style={{ color: f.color }}>
-                  {f.score}%
-                </span>
+
+                <div className="flex items-center gap-3">
+                  <span className="font-mono text-sm font-bold" style={{ color: self.color }}>
+                    {self.score}%
+                  </span>
+                  <span className="text-mist-faint group-hover:text-mist transition-colors">→</span>
+                </div>
               </Link>
             ))}
         </div>
       </div>
 
-      <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <div className="glass rounded-[20px] p-5">
-          <h3 className="font-mono text-xs text-mist-muted">Goals</h3>
-          <p className="mt-2 text-sm text-mist-faint">
-            No saved goals yet. Reflect from the Present page.
-          </p>
-        </div>
-        <div className="glass rounded-[20px] p-5">
-          <h3 className="font-mono text-xs text-mist-muted">Exploration history</h3>
-          <p className="mt-2 text-sm text-mist-faint">
-            What-If runs will appear here once stored by the backend.
-          </p>
-        </div>
-      </div>
-
-      <div className="mt-10">
-        <Link to="/" className="btn-float">
-          Return to Universe
+      <div className="flex justify-between items-center">
+        <Link to="/" className="btn-secondary">
+          ← Back to Universe
+        </Link>
+        <Link to="/what-if" className="btn-primary">
+          <Sparkles className="w-4 h-4" />
+          <span>Launch Simulation</span>
         </Link>
       </div>
     </section>

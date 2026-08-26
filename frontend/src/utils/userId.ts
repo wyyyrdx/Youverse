@@ -1,18 +1,21 @@
-// There's no auth/user system in the product plan yet, and the backend's
-// endpoints are keyed on user_id. Until real accounts exist, generate a stable
-// per-browser id and reuse it, so a returning visitor keeps seeing "their" data.
-const STORAGE_KEY = 'youverse_demo_user_id'
+const STORAGE_KEY = 'youverse_user_id'
 
 export function getUserId(): string {
   try {
     const existing = localStorage.getItem(STORAGE_KEY)
-    if (existing) return existing
-    const fresh =
-      'demo-' + (crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).slice(2))
+    if (existing && existing.length > 3) return existing
+    const fresh = 'user_' + (crypto.randomUUID ? crypto.randomUUID().slice(0, 8) : Math.random().toString(36).slice(2, 10))
     localStorage.setItem(STORAGE_KEY, fresh)
     return fresh
   } catch {
-    // localStorage unavailable (private mode, SSR, etc.) - fall back to a session-only id
-    return 'demo-session'
+    return 'default_user'
+  }
+}
+
+export function setUserId(newId: string): void {
+  try {
+    localStorage.setItem(STORAGE_KEY, newId.trim())
+  } catch (e) {
+    console.error('Failed to persist user ID:', e)
   }
 }

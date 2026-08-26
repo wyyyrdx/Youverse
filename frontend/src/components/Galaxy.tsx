@@ -1,181 +1,195 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { ArrowRight, RefreshCw, Compass } from 'lucide-react'
+import UniverseCanvas from './3d/UniverseCanvas'
+import Superposition3D from './3d/Superposition3D'
+import Starfield3D from './3d/Starfield3D'
 import { usePredictions } from '../hooks/usePredictions'
+import { useSoundEffects } from '../hooks/useSoundEffects'
 import type { FutureSelf } from '../types'
+import Badge from './Badge'
 
 export default function Galaxy() {
-  const { futureSelves, connection, isSimulated } = usePredictions()
+  const { futureSelves, connection, isSimulated, isRefreshing, triggerCalculate } = usePredictions()
   const [activeId, setActiveId] = useState<string | null>(null)
   const navigate = useNavigate()
-  const active = futureSelves.find((f) => f.id === activeId) ?? null
+  const { playHoverTone, playQuantumPulse } = useSoundEffects()
 
-  const goToSelf = (f: FutureSelf) => {
-    setActiveId(f.id)
-    window.setTimeout(() => navigate(`/self/${f.id}`), 380)
+  const activeSelf = futureSelves.find((f) => f.id === activeId) ?? null
+
+  const handleSelectSelf = (self: FutureSelf) => {
+    setActiveId(self.id)
+    playQuantumPulse()
+    setTimeout(() => {
+      navigate(`/self/${self.id}`)
+    }, 450)
+  }
+
+  const handleSelectPresent = () => {
+    playQuantumPulse()
+    navigate('/present')
   }
 
   return (
-    <section id="universe" className="relative px-4 md:px-6 py-24 md:py-32">
-      <div className="atmosphere-glow opacity-40" aria-hidden />
+    <section id="universe" className="relative min-h-screen px-4 sm:px-6 lg:px-8 py-24 md:py-32 flex flex-col justify-center">
+      {/* Background Ambience */}
+      <div
+        className="cosmic-nebula top-1/3 left-1/2 -translate-x-1/2 w-[70vw] h-[50vh] bg-cyan/10"
+        aria-hidden
+      />
 
-      <div className="mx-auto max-w-6xl text-left mb-14 px-1">
-        <p className="font-mono text-[10px] tracking-[0.3em] text-mist-faint mb-3">THE SUPERPOSITION</p>
-        <h2 className="font-display text-2xl md:text-4xl font-bold text-mist">
-          A living map of possible selves
-        </h2>
-        <p className="mt-4 text-sm md:text-base text-mist-muted leading-relaxed max-w-xl">
-          The core is your present. Each orbiting body is a modeled future self. Hover to inspect.
-          Click to enter that region of the possibility space.
-        </p>
-        <div className="mt-4 flex justify-start">
-          <span className="inline-flex items-center gap-2 font-mono text-[10px] text-mist-faint">
-            <span
-              className={`h-1.5 w-1.5 rounded-full ${
-                connection === 'live' ? 'bg-cyan animate-glowPulse' : 'bg-mist-faint'
-              }`}
-            />
-            {connection === 'loading' && 'Connecting…'}
-            {connection === 'live' && (isSimulated ? 'Live · simulated data' : 'Live · real sensor data')}
-            {connection === 'offline' && 'Offline · sample data'}
-          </span>
-        </div>
-      </div>
+      <div className="mx-auto w-full max-w-7xl">
+        {/* Section Header */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8">
+          <div className="text-left max-w-2xl">
+            <div className="flex items-center gap-2 mb-3">
+              <Badge color="cyan">THE SUPERPOSITION</Badge>
+              <span className="font-mono text-[11px] text-mist-faint">
+                {connection === 'live'
+                  ? isSimulated
+                    ? 'Connected (Simulated stream)'
+                    : 'Connected (Live ESP32 stream)'
+                  : 'Predictive Baseline Engine'}
+              </span>
+            </div>
+            <h2 className="font-display text-3xl sm:text-4xl md:text-5xl font-extrabold text-mist tracking-tight">
+              A living map of possible selves
+            </h2>
+            <p className="mt-4 text-sm sm:text-base text-mist-muted leading-relaxed">
+              At the center sits your <strong>Present Self</strong>. Orbiting around it are 5 modeled
+              future trajectories. Hover to inspect orbital characteristics. Click any node to enter that
+              region of the possibility space.
+            </p>
+          </div>
 
-      <div className="relative mx-auto flex h-[520px] md:h-[760px] max-w-full items-center justify-center">
-        {/* orbit rings */}
-        {futureSelves.map((f) => (
-          <div
-            key={`ring-${f.id}`}
-            className="absolute rounded-full border border-white/[0.05]"
-            style={{
-              width: `calc(2 * clamp(48px, ${(f.orbitRadius / 420) * 34}vw, ${f.orbitRadius}px))`,
-              height: `calc(2 * clamp(48px, ${(f.orbitRadius / 420) * 34}vw, ${f.orbitRadius}px))`,
-            }}
-            aria-hidden
-          />
-        ))}
-
-        {/* Present core */}
-        <button
-          onClick={() => navigate('/present')}
-          className="absolute z-20 flex flex-col items-center justify-center group focus:outline-none"
-          aria-label="Your Present"
-        >
-          <div
-            className="h-16 w-16 md:h-[4.5rem] md:w-[4.5rem] rounded-full transition-transform duration-500 group-hover:scale-110 animate-floatY"
-            style={{
-              background: 'radial-gradient(circle at 32% 28%, #fff, #2fe4ff 38%, #e63cff 85%)',
-              boxShadow: '0 0 40px 8px rgba(47, 228, 255, 0.35), 0 0 80px 16px rgba(230, 60, 255, 0.2)',
-            }}
-          />
-          <span className="mt-3 font-mono text-[10px] tracking-wide text-mist-muted group-hover:text-mist transition-colors">
-            Your Present
-          </span>
-        </button>
-
-        {/* orbiting future selves */}
-        {futureSelves.map((f) => (
-          <div
-            key={f.id}
-            className="absolute inset-0 flex items-center justify-center pointer-events-none"
-            style={{
-              animation: `orbitSpin ${f.orbitDuration}s linear infinite`,
-              animationDelay: `-${(f.orbitOffset / 360) * f.orbitDuration}s`,
-            }}
-          >
-            <div
-              className="pointer-events-auto"
-              style={{
-                transform: `translateX(clamp(48px, ${(f.orbitRadius / 420) * 34}vw, ${f.orbitRadius}px))`,
-              }}
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => triggerCalculate()}
+              disabled={isRefreshing}
+              className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-white/10 bg-white/5 text-xs font-mono text-mist hover:bg-white/10 transition-colors disabled:opacity-50"
             >
+              <RefreshCw className={`w-3.5 h-3.5 ${isRefreshing ? 'animate-spin text-cyan' : ''}`} />
+              <span>{isRefreshing ? 'Recalculating…' : 'Sync Model'}</span>
+            </button>
+          </div>
+        </div>
+
+        {/* 3D Superposition Canvas */}
+        <div className="relative w-full h-[540px] sm:h-[620px] md:h-[720px] rounded-3xl border border-white/[0.08] bg-void-card/60 backdrop-blur-2xl overflow-hidden shadow-[0_16px_48px_rgba(0,0,0,0.6)]">
+          <UniverseCanvas>
+            <Starfield3D count={1000} />
+            <Superposition3D
+              futureSelves={futureSelves}
+              activeId={activeId}
+              onHoverNode={(id) => {
+                setActiveId(id)
+                if (id) playHoverTone(id === 'present' ? 440 : 540)
+              }}
+              onSelectNode={handleSelectSelf}
+              onSelectPresent={handleSelectPresent}
+            />
+          </UniverseCanvas>
+
+          {/* Top-Right Quick Selector Bar */}
+          <div className="absolute top-4 right-4 z-20 flex flex-wrap gap-1.5 max-w-xs justify-end">
+            {futureSelves.map((f) => (
               <button
-                onMouseEnter={() => setActiveId(f.id)}
-                onFocus={() => setActiveId(f.id)}
-                onClick={() => goToSelf(f)}
-                style={{
-                  animation: `orbitSpinRev ${f.orbitDuration}s linear infinite`,
-                  animationDelay: `-${(f.orbitOffset / 360) * f.orbitDuration}s`,
+                key={`btn-${f.id}`}
+                onClick={() => handleSelectSelf(f)}
+                onMouseEnter={() => {
+                  setActiveId(f.id)
+                  playHoverTone(500)
                 }}
-                className="group relative flex flex-col items-center focus:outline-none"
-                aria-label={`${f.name}, ${f.score} percent`}
+                className={`px-2.5 py-1 rounded-full text-[10px] font-mono transition-all duration-300 backdrop-blur-md border ${
+                  activeId === f.id
+                    ? 'bg-void-panel border-white/40 shadow-lg scale-105'
+                    : 'bg-void/60 border-white/10 text-mist-muted hover:text-mist hover:bg-white/10'
+                }`}
+                style={{
+                  color: activeId === f.id ? f.color : undefined,
+                  boxShadow: activeId === f.id ? `0 0 12px ${f.glow}` : 'none',
+                }}
               >
-                <span
-                  className="block h-8 w-8 md:h-10 md:w-10 rounded-full transition-all duration-400 group-hover:scale-125"
-                  style={{
-                    background: `radial-gradient(circle at 35% 30%, #fff, ${f.color})`,
-                    boxShadow:
-                      activeId === f.id
-                        ? `0 0 28px 6px ${f.glow}`
-                        : `0 0 16px 3px ${f.glow}`,
-                  }}
-                />
-                <span
-                  className="mt-2 whitespace-nowrap font-mono text-[9px] md:text-[10px] transition-all duration-300"
-                  style={{
-                    color: f.color,
-                    opacity: activeId === f.id ? 1 : 0.45,
-                  }}
-                >
-                  {f.name} · {f.score}%
-                </span>
+                {f.name.split(' ')[0]} · {f.score}%
               </button>
+            ))}
+          </div>
+
+          {/* Bottom Interactive Inspector Overlay */}
+          <div className="absolute bottom-4 left-4 right-4 md:left-6 md:right-auto md:max-w-md z-20">
+            <div className="glass-card rounded-2xl p-5 border border-white/15 backdrop-blur-2xl shadow-2xl transition-all duration-300">
+              {activeSelf ? (
+                <div>
+                  <div className="flex items-center justify-between gap-3">
+                    <div className="flex items-center gap-2">
+                      <span
+                        className="w-3 h-3 rounded-full"
+                        style={{
+                          backgroundColor: activeSelf.color,
+                          boxShadow: `0 0 10px ${activeSelf.color}`,
+                        }}
+                      />
+                      <h3
+                        className="font-display text-lg font-bold"
+                        style={{ color: activeSelf.color }}
+                      >
+                        {activeSelf.name}
+                      </h3>
+                    </div>
+                    <span className="font-mono text-sm font-bold" style={{ color: activeSelf.color }}>
+                      {activeSelf.score}% modeled
+                    </span>
+                  </div>
+
+                  <p className="mt-2.5 text-xs text-mist-muted leading-relaxed">
+                    {activeSelf.description}
+                  </p>
+
+                  <div className="mt-3.5 flex flex-wrap items-center gap-1.5">
+                    <span className="text-[10px] font-mono text-mist-faint mr-1">Signals:</span>
+                    {activeSelf.signals.map((s) => (
+                      <span
+                        key={s}
+                        className="px-2 py-0.5 rounded-full border border-white/10 bg-white/5 font-mono text-[10px] text-mist-muted uppercase"
+                      >
+                        {s}
+                      </span>
+                    ))}
+                  </div>
+
+                  <button
+                    onClick={() => handleSelectSelf(activeSelf)}
+                    className="mt-4 w-full flex items-center justify-center gap-2 py-2 rounded-xl text-xs font-semibold bg-white/10 hover:bg-white/15 text-mist transition-colors border border-white/10"
+                  >
+                    <span>Enter {activeSelf.name} Possibility Space</span>
+                    <ArrowRight className="w-3.5 h-3.5 text-cyan" />
+                  </button>
+                </div>
+              ) : (
+                <div className="text-left">
+                  <div className="flex items-center gap-2">
+                    <Compass className="w-4 h-4 text-cyan animate-pulse" />
+                    <h3 className="font-display text-sm font-bold text-mist">
+                      Possibility Space Inspector
+                    </h3>
+                  </div>
+                  <p className="mt-2 text-xs text-mist-muted leading-relaxed">
+                    Hover over any planet node to inspect its trajectory and signal attributions, or click the center to examine your Present Self.
+                  </p>
+                  <div className="mt-3 flex items-center gap-2">
+                    <button
+                      onClick={handleSelectPresent}
+                      className="text-xs font-mono text-cyan hover:underline"
+                    >
+                      Examine Present Core →
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
-        ))}
+        </div>
       </div>
-
-      {/* detail panel */}
-      <div
-        className={`mx-auto mt-8 max-w-md glass rounded-[20px] px-5 py-4 text-left transition-all duration-500 ${
-          active ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none'
-        }`}
-        role="status"
-        aria-live="polite"
-      >
-        {active && (
-          <>
-            <div className="flex items-center justify-between gap-3">
-              <h3 className="font-display text-base" style={{ color: active.color }}>
-                {active.name}
-              </h3>
-              <span className="font-mono text-sm text-mist-muted">{active.score}%</span>
-            </div>
-            <p className="mt-2 text-sm text-mist-muted leading-relaxed">{active.description}</p>
-            <div className="mt-3 flex flex-wrap gap-1.5">
-              {active.signals.map((s) => (
-                <span
-                  key={s}
-                  className="border border-white/10 px-2 py-0.5 font-mono text-[10px] text-mist-faint rounded-full"
-                >
-                  {s}
-                </span>
-              ))}
-            </div>
-            <button
-              onClick={() => goToSelf(active)}
-              className="mt-4 text-xs font-mono text-cyan hover:text-mist transition-colors"
-            >
-              Enter this region →
-            </button>
-          </>
-        )}
-      </div>
-
-      <p className="mx-auto mt-6 max-w-md text-center text-[11px] text-mist-faint font-mono">
-        Modeled likelihoods from behavioral signals. Not a measurement or a guarantee.
-      </p>
-
-      <style>{`
-        @keyframes orbitSpin {
-          from { transform: rotate(0deg); }
-          to { transform: rotate(360deg); }
-        }
-        @keyframes orbitSpinRev {
-          from { transform: rotate(0deg); }
-          to { transform: rotate(-360deg); }
-        }
-      `}</style>
     </section>
   )
 }

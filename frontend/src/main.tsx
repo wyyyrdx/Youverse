@@ -6,17 +6,9 @@ import Present from './pages/Present'
 import Profile from './pages/Profile'
 import Discoveries from './pages/Discoveries'
 import FutureSelf from './pages/FutureSelf'
-import WhatIf from './components/WhatIf'
+import WhatIfPage from './pages/WhatIfPage'
 import Layout from './components/Layout'
 import './index.css'
-
-function WhatIfPage() {
-  return (
-    <div className="pt-8">
-      <WhatIf />
-    </div>
-  )
-}
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
